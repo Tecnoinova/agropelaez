@@ -1,0 +1,76 @@
+/* Estilos aislados para pago */
+:root{
+  --pay-gap:12px;
+  --pay-bg: radial-gradient(1200px 600px at 10% -10%, #fce7f3 0%, transparent 50%),
+             radial-gradient(1200px 600px at 110% 10%, #dbeafe 0%, transparent 50%),
+             linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --pay-text:#0f172a;
+  --pay-muted:#64748b;
+  --pay-panel:#ffffff;
+  --pay-border:rgba(2,6,23,.12);
+  --pay-shadow:0 12px 40px rgba(2,6,23,.12);
+  --pay-primary:#2563eb;
+  --pay-primary-2:#3b82f6;
+}
+
+html, body{background:var(--pay-bg);color:var(--pay-text);font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+
+header.pay{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.65);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--pay-border)}
+header.pay .nav{display:flex;align-items:center;justify-content:space-between;min-height:56px}
+header.pay .brand{display:flex;align-items:center;gap:10px;color:var(--pay-text);text-decoration:none}
+header.pay .brand small{color:var(--pay-muted)}
+
+/* Layout */
+.pay-container{max-width:1200px;margin:0 auto;padding:0 16px;box-sizing:border-box;width:100%}
+.pay-page{min-height:100vh;padding:18px 0}
+.pay-grid{display:grid;gap:var(--pay-gap)}
+.pay-grid-2{grid-template-columns:repeat(2, minmax(360px,1fr))}
+@media (max-width: 900px){.pay-grid-2{grid-template-columns:1fr}}
+
+/* Forzar una sola columna en los campos del checkout (Paso 1) */
+#step-1{grid-template-columns:1fr !important}
+#step-1 > *{grid-column:1 / -1}
+
+/* Cards y tipografía */
+.pay-card{border:1px solid var(--pay-border);border-radius:16px;background:var(--pay-panel);padding:18px;box-sizing:border-box;width:100%;box-shadow:var(--pay-shadow)}
+.pay-card{position:relative}
+.pay-card form{padding-bottom:68px}
+.pay-muted{color:var(--pay-muted)}
+.pay-price{font-weight:900}
+.pay-card h1{font-size:32px;margin:0 0 6px}
+.pay-card h2{font-size:22px;margin:0}
+
+/* Inputs visibles solo aquí */
+.pay-card input[type="text"],
+.pay-card input[type="email"],
+.pay-card input[type="tel"],
+.pay-card textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--pay-border);
+  border-radius:10px;
+  background:#fff;
+  color:var(--pay-text);
+  outline:none;
+}
+.pay-card input:focus, .pay-card textarea:focus{border-color:var(--pay-primary)}
+
+/* Botones */
+.pay-btn{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--pay-border);padding:10px 14px;border-radius:12px;color:var(--pay-text);text-decoration:none;background:#fff;font-weight:800}
+.pay-btn-primary{background:linear-gradient(135deg,var(--pay-primary-2),var(--pay-primary));color:#fff;border-color:transparent}
+.pay-btn:hover{filter:brightness(0.98)}
+
+/* Barra de acciones fija dentro de la tarjeta */
+.pay-actions{position:sticky;bottom:12px;right:12px;background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.95));padding:10px 12px;border-radius:999px;border:1px solid var(--pay-border);box-shadow:var(--pay-shadow)}
+
+/* Toast */
+.pay-toast{position:fixed;right:16px;top:16px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:14px 18px;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s ease, transform .18s ease;z-index:9999;display:flex;gap:10px;align-items:center;font-weight:800}
+.pay-toast.show{opacity:1;transform:translateY(2px)}
+.pay-toast .icon{background:rgba(255,255,255,.2);border-radius:999px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+
+/* Resumen: cajitas por ítem */
+#pf-summary > div{border:1px solid var(--pay-border);border-radius:12px;padding:10px 12px;background:#fff}
+
+/* Tarjeta: una sola columna y 100% ancho */
+#pay-tarjeta-fields{grid-template-columns:1fr !important}
+#pay-tarjeta-fields input{width:100%}

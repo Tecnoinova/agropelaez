@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Propuesta económica · Agroequipos Pelaez</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Layout base */
+    body.modern .letter{max-width:980px;margin:0 auto;padding:48px 0 72px}
+    body.modern .letter-card{border-radius:22px;border:1px solid var(--border);background:rgba(255,255,255,.04);box-shadow:0 18px 50px rgba(0,0,0,.28);overflow:hidden}
+    body.modern .letter-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 22px;border-bottom:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));box-shadow: inset 0 1px 0 rgba(255,255,255,.08)}
+    html[data-theme="light"] body.modern .letter-head{background:linear-gradient(180deg, rgba(17,24,39,.04), rgba(17,24,39,.02));box-shadow: inset 0 1px 0 rgba(17,24,39,.06)}
+    body.modern .letter-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);opacity:.95}
+    body.modern .letter-brand{display:flex;align-items:center;gap:14px}
+    body.modern .letter-brand img{width:48px;height:48px;border-radius:16px;object-fit:contain;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+    html[data-theme="light"] body.modern .letter-brand img{background:rgba(17,24,39,.04);border-color:rgba(17,24,39,.10)}
+    body.modern .letter-brand strong{display:block;color:var(--text);font-weight:950;letter-spacing:.2px}
+    body.modern .letter-brand small{display:block;color:var(--muted);font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    body.modern .letter-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;color:var(--muted);font-weight:800}
+    body.modern .letter-meta b{color:var(--text);font-weight:950}
+    body.modern .letter-body{padding:24px 22px 10px}
+    body.modern .letter-body h1{margin:0 0 10px;font-size:clamp(22px,2.8vw,30px);letter-spacing:-.02em;color:var(--text)}
+    body.modern .letter-body p{margin:12px 0;color:var(--muted);line-height:1.75}
+
+    /* Secciones ECO */
+    .eco-section{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);padding:16px 16px;margin-top:16px;box-shadow: 0 10px 26px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.06)}
+    html[data-theme="light"] .eco-section{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
+    .eco-section::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);opacity:.95}
+    .eco-section h2{margin:0 0 10px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+
+    /* Tabla de inversión */
+    .eco-table{width:100%;border-collapse:collapse;border-spacing:0}
+    .eco-table th,.eco-table td{border-bottom:1px solid rgba(255,255,255,.10);padding:10px 8px;text-align:left}
+    html[data-theme="light"] .eco-table th, html[data-theme="light"] .eco-table td{border-color:rgba(17,24,39,.12)}
+    .eco-table th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--text)}
+    .eco-table td{color:var(--muted);font-weight:700}
+    .eco-table tfoot td{font-weight:900;color:var(--text)}
+    .num{text-align:right}
+
+    /* Plan de acción */
+    .plan-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .plan{grid-column:span 6;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);padding:12px}
+    html[data-theme="light"] .plan{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
+    .plan b{display:block;color:var(--text);letter-spacing:.10em;text-transform:uppercase;font-size:12px;margin-bottom:6px}
+    .plan ul{margin:6px 0 0 18px;color:var(--muted)}
+
+    /* Tiempos (timeline) */
+    .timeline{position:relative;padding:10px 10px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03)}
+    .tl-row{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:10px;margin:8px 0}
+    .tl-row .name{font-size:12px;color:var(--text);font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .bar{position:relative;height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+    .bar .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899);width:0;transition:width 1200ms ease}
+    .dates{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:800;margin-top:2px}
+
+    /* CTA */
+    .cta{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,.18);padding:10px 14px;border-radius:12px;color:var(--text);text-decoration:none;background:rgba(255,255,255,.06);font-weight:800}
+    .btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border-color:transparent}
+    /* Mostrar la fecha formateada solo en PDF/print */
+    #start-date-display{display:none}
+
+    /* Modo de exportación (aplicado mientras se genera el PDF) */
+    .pdf-export {
+      background:#fff !important;
+    }
+    .pdf-export .letter-card,
+    .pdf-export .eco-section,
+    .pdf-export .timeline { background:#fff !important; box-shadow:none !important; }
+    .pdf-export *,
+    .pdf-export *:before,
+    .pdf-export *:after { color:#000 !important; opacity:1 !important; filter:none !important }
+    .pdf-export .letter-body{ padding:12px 16px 8px !important }
+    .pdf-export .eco-section{ padding:10px 12px !important; margin-top:10px !important }
+    .pdf-export .eco-table th, .pdf-export .eco-table td{ padding:6px 6px !important; border-color:rgba(0,0,0,.4) !important }
+    .pdf-export .plan b, .pdf-export .eco-section h2{ font-size:11px !important }
+    .pdf-export .plan ul, .pdf-export .sub, .pdf-export p{ font-size:12px !important; line-height:1.4 !important }
+    .pdf-export .bar{ background:rgba(0,0,0,.1) !important }
+    .pdf-export .bar .fill{ background:#000 !important }
+    .pdf-export .letter-head::after{ display:none !important }
+    .pdf-export .btn, .pdf-export .cta{ display:none !important }
+    .pdf-export #start-date{ display:none !important }
+    .pdf-export #start-date-display{ display:inline-block !important }
+
+    /* Ocultar en PDF/print */
+    @media print{
+      html, body{background:#fff !important}
+      body, body *{color:#000 !important; opacity:1 !important; filter:none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact}
+      .pdf-hide{display:none !important}
+      .letter{padding:12px 0 12px !important}
+      .letter-card{background:#fff !important; box-shadow:none !important; border-color:#000 !important; overflow:visible !important}
+      .letter-head{background:#fff !important; box-shadow:none !important}
+      .letter-head::after{display:none !important}
+      .letter-body{padding:12px 16px 8px !important}
+      .eco-section{background:#fff !important; box-shadow:none !important; break-inside: avoid; page-break-inside: avoid; border-color:rgba(0,0,0,.2) !important; padding:10px 12px !important; margin-top:10px !important}
+      .eco-table th, .eco-table td{border-color:rgba(0,0,0,.4) !important; padding:6px 6px !important}
+      .plan b, .eco-section h2{font-size:11px !important}
+      .plan ul, .sub, p{font-size:12px !important}
+      .timeline{background:#fff !important; border-color:rgba(0,0,0,.2) !important}
+      .bar{background:rgba(0,0,0,.1) !important}
+      .bar .fill{background:#000 !important}
+      .btn, .cta{display:none !important}
+      #start-date{display:none !important}
+      #start-date-display{display:inline-block !important}
+    }
+
+    @media (max-width: 900px){
+      .plan{grid-column:span 12}
+    }
+  </style>
+</head>
+<body class="modern">
+  <main class="container">
+    <section class="letter" aria-label="Propuesta económica">
+      <div class="letter-card">
+        <div class="letter-head">
+          <div class="letter-brand">
+            <img src="img/uploads/2021/09/agroequipos-pelaez-logo-transparente-2.png" alt="Agroequipos Pelaez" />
+            <div>
+              <strong>Tecno Innova</strong>
+              <small>Propuesta Económica</small>
+            </div>
+          </div>
+          <div class="letter-meta">
+            <div><b>Para:</b> Agroequipos Pelaez</div>
+            <div><b>Documento:</b> Propuesta económica</div>
+            <div><b>Fecha:</b> <span id="eco-date"></span></div>
+          </div>
+        </div>
+
+        <div class="letter-body">
+          <h1>Inversión, plan de acción y tiempos de entrega</h1>
+          <p>Desglose de inversión estimada, fases de implementación y tiempos de entrega propuestos para poner el sistema en operación con valor desde el primer entregable.</p>
+
+          <!-- Inversión -->
+          <div class="eco-section avoid-break" aria-label="Inversión">
+            <h2>Inversión</h2>
+            <table class="eco-table" id="eco-table">
+              <thead>
+                <tr>
+                  <th>Concepto</th>
+                  <th class="num">Importe (MXN)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Implementación base ERP + CRM</td><td class="num" data-amount>120000</td></tr>
+                <tr><td>Desarrollo a medida (ventas/inventario/envíos)</td><td class="num" data-amount>95000</td></tr>
+                <tr><td>Plantillas de documentos (OV / Garantía / Envío)</td><td class="num" data-amount>28000</td></tr>
+                <tr><td>Infraestructura y despliegue (1 año)</td><td class="num" data-amount>36000</td></tr>
+                <tr><td>Capacitación (ventas y almacén)</td><td class="num" data-amount>18000</td></tr>
+                <tr><td>Soporte y mejoras (3 meses)</td><td class="num" data-amount>24000</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><td>Subtotal</td><td class="num" id="eco-subtotal">—</td></tr>
+                <tr><td>IVA 16%</td><td class="num" id="eco-iva">—</td></tr>
+                <tr><td>Total</td><td class="num" id="eco-total">—</td></tr>
+              </tfoot>
+            </table>
+            <p class="sub">Forma de pago propuesta: <strong>50% anticipo</strong>, <strong>30% a la entrega de Fase 2</strong>, <strong>20% al cierre</strong>. Vigencia de esta propuesta: <strong>30 días</strong>.</p>
+          </div>
+
+          <!-- Retorno estimado (ROI) -->
+          <div class="eco-section avoid-break" aria-label="Retorno estimado">
+            <h2>Retorno estimado (ROI)</h2>
+            <div class="plan-grid">
+              <div class="plan">
+                <b>Supuestos</b>
+                <ul style="list-style:none;padding-left:0">
+                  <li>Órdenes/mes: <input id="s-orders" type="number" value="60" style="width:90px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);padding:4px 6px" /></li>
+                  <li>Minutos actuales por orden: <input id="s-mins" type="number" value="18" style="width:90px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);padding:4px 6px" /></li>
+                  <li>Ahorro con sistema: <input id="s-save" type="number" value="45" style="width:90px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);padding:4px 6px" />%</li>
+                  <li>Costo hora equipo: <input id="s-cost" type="number" value="180" style="width:90px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);padding:4px 6px" /> MXN</li>
+                </ul>
+              </div>
+              <div class="plan">
+                <b>Resultados</b>
+                <ul>
+                  <li>Ahorro mensual estimado: <span id="r-month">—</span></li>
+                  <li>Punto de equilibrio: <span id="r-payback">—</span></li>
+                  <li>Ahorro anual proyectado: <span id="r-year">—</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Justificación de inversión -->
+          <div class="eco-section avoid-break" aria-label="Justificación de inversión">
+            <h2>¿Por qué es un precio justo?</h2>
+            <div class="plan-grid" style="margin-top:8px">
+              <div class="plan">
+                <b>1) Alcance y entregables</b>
+                <ul>
+                  <li>ERP + CRM funcional desde Fase 1</li>
+                  <li>Flujos completos: Captura → Inventario → Documentos → Envío</li>
+                  <li>Plantillas OV, Garantía y Envío listas para imprimir/PDF</li>
+                </ul>
+              </div>
+              <div class="plan">
+                <b>2) Impacto operativo (ROI)</b>
+                <ul>
+                  <li>−40–60% tiempo en captura/validación</li>
+                  <li>−70% errores por datos incompletos o stock</li>
+                  <li>Trazabilidad y documentos “one-click”</li>
+                </ul>
+              </div>
+              <div class="plan" style="grid-column:span 12">
+                <b>3) Desglose de esfuerzo</b>
+                <table class="eco-table" style="margin-top:6px">
+                  <thead>
+                    <tr><th>Bloque</th><th>Horas</th><th class="num">Tarifa</th><th class="num">Subtotal</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Arquitectura, setup, seguridad</td><td>24</td><td class="num">$ 1,200</td><td class="num">$ 28,800</td></tr>
+                    <tr><td>Ventas (OV) + Validación de stock</td><td>48</td><td class="num">$ 1,200</td><td class="num">$ 57,600</td></tr>
+                    <tr><td>Documentos (OV/Garantía/Envío)</td><td>32</td><td class="num">$ 1,200</td><td class="num">$ 38,400</td></tr>
+                    <tr><td>Envíos (ruta, costos, dirección)</td><td>28</td><td class="num">$ 1,200</td><td class="num">$ 33,600</td></tr>
+                    <tr><td>Pruebas, hardening y capacitación</td><td>26</td><td class="num">$ 1,200</td><td class="num">$ 31,200</td></tr>
+                  </tbody>
+                  <tfoot>
+                    <tr><td>Horas estimadas</td><td>158</td><td></td><td class="num">$ 189,600</td></tr>
+                  </tfoot>
+                </table>
+                <p class="sub">La inversión total incluye además <strong>infraestructura</strong>, <strong>plantillas</strong>, <strong>soporte</strong> y margen de gestión/riesgo para asegurar entregables a tiempo y con calidad.</p>
+              </div>
+              <div class="plan" style="grid-column:span 12">
+                <b>4) Supuestos y límites del alcance</b>
+                <ul>
+                  <li>Flujos y documentos según ejemplos presentados</li>
+                  <li>Sin integraciones externas en esta etapa (se cotizan aparte)</li>
+                  <li>Datos maestros (clientes, SKUs) provistos por el cliente</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan de acción -->
+          <div class="eco-section avoid-break" aria-label="Plan de acción">
+            <h2>Plan de acción</h2>
+            <div class="plan-grid">
+              <div class="plan">
+                <b>Fase 1 · Arranque (1-2 sem)</b>
+                <ul>
+                  <li>Definición de alcance y flujos clave</li>
+                  <li>Instancia del sistema y autenticación</li>
+                  <li>Catálogo base e inventario</li>
+                </ul>
+              </div>
+              <div class="plan">
+                <b>Fase 2 · Ventas e Inventario (2-3 sem)</b>
+                <ul>
+                  <li>Captura OV y validación de stock</li>
+                  <li>Documentos: OV y Garantía</li>
+                  <li>KPIs básicos</li>
+                </ul>
+              </div>
+              <div class="plan">
+                <b>Fase 3 · Envíos (1-2 sem)</b>
+                <ul>
+                  <li>Ruta y costos, datos de entrega</li>
+                  <li>Documento de Envío</li>
+                  <li>Pruebas integrales</li>
+                </ul>
+              </div>
+              <div class="plan">
+                <b>Fase 4 · Cierre y capacitación (1 sem)</b>
+                <ul>
+                  <li>Capacitación a ventas/almacén</li>
+                  <li>Checklist y hardening</li>
+                  <li>Salida a producción</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tiempos de entrega -->
+          <div class="eco-section avoid-break" aria-label="Tiempos de entrega">
+            <h2>Tiempos de entrega</h2>
+            <div>
+              <label for="start-date" style="font-weight:800;color:var(--text);font-size:12px;letter-spacing:.10em;text-transform:uppercase">Fecha de inicio</label>
+              <input id="start-date" type="date" style="margin-left:8px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);padding:6px 8px" />
+              <span id="start-date-display" style="margin-left:8px;color:var(--text);font-weight:900"></span>
+              <div id="negotiation-row" style="margin-top:6px">
+                <small style="font-weight:800;color:var(--text);letter-spacing:.10em;text-transform:uppercase">Fecha actual</small>
+                <span id="negotiation-timestamp" style="margin-left:8px;color:var(--text);font-weight:900"></span>
+              </div>
+            </div>
+            <div class="timeline" id="timeline">
+              <div class="tl-row"><div class="name">Fase 1</div><div class="bar"><div class="fill" id="bar-f1"></div></div></div>
+              <div class="dates"><span id="f1-start">—</span><span id="f1-end">—</span></div>
+              <div class="tl-row"><div class="name">Fase 2</div><div class="bar"><div class="fill" id="bar-f2"></div></div></div>
+              <div class="dates"><span id="f2-start">—</span><span id="f2-end">—</span></div>
+              <div class="tl-row"><div class="name">Fase 3</div><div class="bar"><div class="fill" id="bar-f3"></div></div></div>
+              <div class="dates"><span id="f3-start">—</span><span id="f3-end">—</span></div>
+              <div class="tl-row"><div class="name">Fase 4</div><div class="bar"><div class="fill" id="bar-f4"></div></div></div>
+              <div class="dates"><span id="f4-start">—</span><span id="f4-end">—</span></div>
+            </div>
+            <p class="sub">Duración estimada total: <strong>5–8 semanas</strong> dependiendo de aprobaciones y ajustes.</p>
+          </div>
+
+          <div class="cta" style="margin-top:14px">
+            <a class="btn" href="propuesta.html">← Volver a la propuesta</a>
+            <a class="btn btn-primary" href="#" onclick="downloadEcoPDF(); return false;">Descargar PDF</a>
+          </div>
+        </div>
+
+        <div class="letter-foot pdf-hide">
+          <div class="sig">
+            <b>Tecno Innova</b>
+            <span>Equipo de implementación</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- html2pdf.js -->
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+  <script>
+    (function(){
+      // Fecha
+      var d = document.getElementById('eco-date');
+      if (d) d.textContent = new Date().toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' });
+      try{ var t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); }catch(e){}
+    })();
+
+    // Sumar importes e IVA
+    (function(){
+      var rows = Array.prototype.slice.call(document.querySelectorAll('#eco-table [data-amount]'));
+      if (rows.length === 0) return;
+      function pesos(n){ return n.toLocaleString('es-MX', { style:'currency', currency:'MXN', maximumFractionDigits:0 }); }
+      var subtotal = rows.reduce(function(a,td){ return a + Number(td.textContent||0); }, 0);
+      var iva = Math.round(subtotal * 0.16);
+      var total = subtotal + iva;
+      document.getElementById('eco-subtotal').textContent = pesos(subtotal);
+      document.getElementById('eco-iva').textContent = pesos(iva);
+      document.getElementById('eco-total').textContent = pesos(total);
+      // Formatear celdas
+      rows.forEach(function(td){ td.textContent = pesos(Number(td.textContent||0)); });
+    })();
+
+    // Timeline: 4 fases con fechas y barras en función de la fecha de inicio
+    (function(){
+      var input = document.getElementById('start-date');
+      var bars = [
+        { id:'bar-f1', w:14, startEl:'f1-start', endEl:'f1-end' }, // 2 sem
+        { id:'bar-f2', w:21, startEl:'f2-start', endEl:'f2-end' }, // 3 sem
+        { id:'bar-f3', w:14, startEl:'f3-start', endEl:'f3-end' }, // 2 sem
+        { id:'bar-f4', w:7,  startEl:'f4-start', endEl:'f4-end' }  // 1 sem
+      ];
+      function fmt(d){
+        var dia = String(d.getDate()).padStart(2,'0');
+        var mes = d.toLocaleDateString('es-MX', { month:'short' });
+        return dia + '-' + mes;
+      }
+      function addDays(d, n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+      function parseLocal(s){
+        if (!s) return new Date();
+        if (s.indexOf('/') >= 0){
+          // Formato DD/MM/YYYY
+          var q = s.split('/');
+          if (q.length === 3){
+            var d = Number(q[0]); var m = Number(q[1]); var y = Number(q[2]);
+            return new Date(y, (m-1), d);
+          }
+        }
+        // Formato YYYY-MM-DD
+        var p = s.split('-');
+        if (p.length === 3){
+          var y = Number(p[0]); var m = Number(p[1]); var d = Number(p[2]);
+          return new Date(y, (m-1), d);
+        }
+        return new Date();
+      }
+      function update(){
+        var hasDate = !!(input && input.value);
+        if (!hasDate){
+          // mantener vacío: barras a 0 y fechas en —
+          bars.forEach(function(b){
+            var el = document.getElementById(b.id);
+            var sEl = document.getElementById(b.startEl);
+            var eEl = document.getElementById(b.endEl);
+            if (el) el.style.width = '0%';
+            if (sEl) sEl.textContent = '—';
+            if (eEl) eEl.textContent = '—';
+          });
+          return;
+        }
+        var start = parseLocal(input.value);
+        // Mostrar fecha de inicio como DD/MM/YYYY
+        var show = document.getElementById('start-date-display');
+        if (show){
+          var dd = String(start.getDate()).padStart(2,'0');
+          var mm = String(start.getMonth()+1).padStart(2,'0');
+          var yy = start.getFullYear();
+          show.textContent = dd+'/'+mm+'/'+yy;
+        }
+        // Actualizar timestamp de negociación (ahora)
+        var now = new Date();
+        var nego = document.getElementById('negotiation-timestamp');
+        if (nego){
+          var nd = String(now.getDate()).padStart(2,'0');
+          var nm = String(now.getMonth()+1).padStart(2,'0');
+          var ny = now.getFullYear();
+          var nh = String(now.getHours()).padStart(2,'0');
+          var nmin = String(now.getMinutes()).padStart(2,'0');
+          nego.textContent = nd+'/'+nm+'/'+ny+' '+nh+':'+nmin;
+        }
+        var dayCursor = new Date(start);
+        var totalDays = bars.reduce(function(a,b){ return a + b.w; }, 0);
+        bars.forEach(function(b){
+          var el = document.getElementById(b.id);
+          var sEl = document.getElementById(b.startEl);
+          var eEl = document.getElementById(b.endEl);
+          if (!el) return;
+          // ancho relativo sobre el total
+          var pct = Math.round((b.w / totalDays) * 100);
+          el.style.width = pct + '%';
+          var s = new Date(dayCursor);
+          var e = addDays(dayCursor, b.w);
+          sEl.textContent = fmt(s);
+          eEl.textContent = fmt(addDays(e,-1));
+          dayCursor = e;
+        });
+      }
+      if (input){
+        input.addEventListener('change', update);
+        input.addEventListener('blur', function(){
+          // Si el usuario escribió DD/MM/YYYY, normalizar a YYYY-MM-DD para el input y actualizar
+          var v = input.value.trim();
+          if (v.indexOf('/') >= 0){
+            var d = parseLocal(v);
+            if (!isNaN(d.getTime())){
+              var yyyy = d.getFullYear();
+              var mm = String(d.getMonth()+1).padStart(2,'0');
+              var dd = String(d.getDate()).padStart(2,'0');
+              input.value = yyyy+'-'+mm+'-'+dd;
+              update();
+            }
+          }
+        });
+        // Si no hay fecha, precargar hoy para activar la gráfica
+        if (!input.value){
+          var t = new Date();
+          var yyyy = t.getFullYear();
+          var mm = String(t.getMonth()+1).padStart(2,'0');
+          var dd = String(t.getDate()).padStart(2,'0');
+          input.value = yyyy+'-'+mm+'-'+dd;
+        }
+      }
+      // pintar acorde a la fecha actual (ya precargada)
+      setTimeout(function(){ update(); }, 50);
+    })();
+
+    // Retorno estimado y punto de equilibrio
+    (function(){
+      function readTotal(){
+        var t = document.getElementById('eco-total');
+        if (!t) return 0;
+        return Number((t.textContent||'').replace(/[^0-9]/g,'')) || 0;
+      }
+      function pesos(n){ return n.toLocaleString('es-MX', { style:'currency', currency:'MXN', maximumFractionDigits:0 }); }
+      function compute(){
+        var elOrders = document.getElementById('s-orders');
+        var elMins = document.getElementById('s-mins');
+        var elSave = document.getElementById('s-save');
+        var elCost = document.getElementById('s-cost');
+        if (!elOrders || !elMins || !elSave || !elCost) return;
+        var orders = Number(elOrders.value||0);
+        var mins   = Number(elMins.value||0);
+        var save   = Number(elSave.value||0) / 100;
+        var costH  = Number(elCost.value||0);
+        var savedMins = orders * mins * save; // minutos ahorrados al mes
+        var savedHours = savedMins / 60;
+        var monthly = Math.round(savedHours * costH);
+        var total = readTotal();
+        var months = monthly > 0 ? Math.ceil(total / monthly) : 0;
+        var rMonth = document.getElementById('r-month');
+        var rPay  = document.getElementById('r-payback');
+        var rYear = document.getElementById('r-year');
+        if (rMonth) rMonth.textContent = pesos(monthly);
+        if (rPay)   rPay.textContent = months > 0 ? (months + ' meses') : '—';
+        if (rYear)  rYear.textContent = pesos(monthly * 12);
+      }
+      // recomputar en cambios
+      document.addEventListener('input', function(e){
+        if (e.target && ['s-orders','s-mins','s-save','s-cost'].includes(e.target.id)) compute();
+      });
+      setTimeout(compute, 150);
+    })();
+
+    // Descargar PDF de la propuesta económica
+    function downloadEcoPDF(){
+      var root = document.querySelector('.letter');
+      var card = root;
+      if (!card){ alert('No se encontró el contenido a exportar'); return; }
+      // Activar modo de exportación para que html2canvas tome estilos negros/compactos
+      document.documentElement.classList.add('pdf-export');
+      var opt = {
+        margin:       [6,6,6,6],
+        filename:     'Propuesta-economica-Agroequipos-Pelaez.pdf',
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0, ignoreElements: (el)=>el.classList && el.classList.contains('pdf-hide') },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all','css','legacy'] }
+      };
+      html2pdf().set(opt).from(card).save().then(function(){
+        document.documentElement.classList.remove('pdf-export');
+      }).catch(function(){
+        document.documentElement.classList.remove('pdf-export');
+      });
+    }
+  </script>
+</body>
+</html>

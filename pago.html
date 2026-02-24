@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pago - Agroequipos Pelaez</title>
+  <link rel="stylesheet" href="pago.css" />
+</head>
+<body class="modern">
+  <header class="pay">
+    <div class="pay-container">
+      <nav class="nav" aria-label="Navegación">
+        <a class="brand" href="index.html" aria-label="Ir al inicio">
+          <img class="brand-logo" src="img/uploads/2021/09/agroequipos-pelaez-logo-transparente-2.png" alt="Agroequipos Pelaez" width="44" height="44" />
+          <span>Agroequipos Pelaez<br /><small>Pago</small></span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pay-page">
+    <div class="pay-container pay-grid pay-grid-2">
+      <section class="pay-card" style="grid-column:1">
+        <h1>Checkout</h1>
+        <p class="pay-muted">Paso <span id="step-num">1</span> de 2</p>
+        <form id="pay-form" class="pay-grid">
+          <div id="step-1" style="grid-column:span 2" class="pay-grid">
+            <div>
+              <label>Nombre / Contacto<br><input id="pf-nombre" type="text" style="width:100%" required></label>
+            </div>
+            <div>
+              <label>Correo electrónico<br><input id="pf-email" type="email" style="width:100%" required></label>
+            </div>
+            <div>
+              <label>Teléfono (WhatsApp)<br><input id="pf-tel" type="tel" style="width:100%" required></label>
+            </div>
+            <div>
+              <label>Dirección de entrega<br><input id="pf-dir" type="text" style="width:100%" required></label>
+            </div>
+            <div>
+              <label>RFC (opcional)<br><input id="pf-rfc" type="text" style="width:100%"></label>
+            </div>
+            <div>
+              <label>Uso CFDI (opcional)<br><input id="pf-cfdi" type="text" style="width:100%" placeholder="G01/G03/etc."></label>
+            </div>
+            <div style="grid-column:span 2">
+              <label>Razón social / Domicilio fiscal (opcional)<br><input id="pf-razon" type="text" style="width:100%"></label>
+            </div>
+            <div style="grid-column:span 2">
+              <label>Notas / Requerimientos<br><textarea id="pf-notas" rows="3" style="width:100%"></textarea></label>
+            </div>
+          </div>
+
+          <!-- Paso 2 se mueve al resumen para mayor claridad visual -->
+
+          <div class="pay-actions" style="grid-column:span 2;display:flex;gap:8px;justify-content:flex-end">
+            <a class="pay-btn" href="productos.html">Seguir comprando</a>
+            <button class="pay-btn" type="button" id="pf-back" style="display:none">Regresar</button>
+            <button class="pay-btn pay-btn-primary" type="button" id="pf-next">Siguiente</button>
+            <button class="pay-btn pay-btn-primary" type="submit" id="pf-send" style="display:none">Generar solicitud de pago</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="pay-card" style="grid-column:2">
+        <h2>Resumen del pedido</h2>
+        <div id="pf-summary" class="pay-grid" style="margin-top:8px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <strong>Total:</strong>
+          <span id="pf-total" class="pay-price">$0</span>
+        </div>
+        <div style="margin-top:16px;border-top:1px solid rgba(2,6,23,.12);padding-top:12px" class="pay-grid">
+          <strong>Método de pago</strong>
+          <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Transferencia" id="pay-trans" checked> Transferencia (CLABE)</label>
+          <div id="pay-trans-fields" style="margin-left:26px;display:none">
+            <small>Te compartiremos los datos bancarios al confirmar.</small>
+          </div>
+          <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Contra entrega" id="pay-contra"> Contra entrega</label>
+          <div id="pay-contra-fields" style="margin-left:26px;display:none">
+            <small>Pago al recibir. Aplica en zonas seleccionadas.</small>
+          </div>
+          <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Tarjeta" id="pay-tarjeta"> Tarjeta (débito/crédito)</label>
+          <div id="pay-tarjeta-fields" class="pay-grid pay-grid-2" style="margin-left:26px;display:none">
+            <input type="text" id="card-number" placeholder="Número de tarjeta"/>
+            <input type="text" id="card-name" placeholder="Nombre en la tarjeta"/>
+            <input type="text" id="card-exp" placeholder="MM/AA"/>
+            <input type="text" id="card-cvv" placeholder="CVV"/>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="pay-toast" id="pf-toast"></div>
+  <script src="pago.js" defer></script>
+</body>
+</html>

@@ -71,17 +71,17 @@
     .flow-switch button{appearance:none;border:0;background:transparent;color:var(--text);font-weight:900;cursor:pointer}
     .flow-switch .pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
     html[data-theme="light"] .flow-switch .pill{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.06)}
-    .doc-scene{position:relative}
-    .doc-card{position:absolute;right:10px;left:10px;top:10px;border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);transform:translateY(12px) scale(.98);opacity:0}
+    .doc-scene{position:relative;min-height:clamp(300px, 26vh, 380px);padding-bottom:8px}
+    .doc-card{position:absolute;right:10px;left:10px;top:10px;border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);transform:translateY(12px) scale(.98);opacity:0}
     html[data-theme="light"] .doc-card{border-color:rgba(17,24,39,.10);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
-    .doc-card b{display:block;color:var(--text);font-size:13px;letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
+    .doc-card b{display:block;color:var(--text);font-size:12px;letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
     .doc-meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px}
     .doc-pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
     html[data-theme="light"] .doc-pill{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.04)}
     .doc-card.show{opacity:1;transform:none;transition:opacity .45s ease, transform .45s ease}
-    .doc-card:nth-child(1){top:12px}
-    .doc-card:nth-child(2){top:122px}
-    .doc-card:nth-child(3){top:232px}
+    .doc-card:nth-child(1){top:6%}
+    .doc-card:nth-child(2){top:34%}
+    .doc-card:nth-child(3){top:62%}
     body.modern .shot{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);position:relative;min-height:220px}
     html[data-theme="light"] body.modern .shot{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
     body.modern .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.45) 100%)}
@@ -600,7 +600,7 @@
 
   <footer style="background: rgba(17,24,39,0.95); color: rgba(255,255,255,0.8); text-align: center; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);">
     <div class="container">
-      <p style="margin: 0; font-size: 14px; font-weight: 600;">Desarrollado por <strong style="color: #fff;">Tecnoinova</strong> & <strong style="color: #fff;">The Unknown Shopper</strong></p>
+      <p style="margin: 0; font-size: 14px; font-weight: 600;">Desarrollado por <strong style="color: #fff;">Tecnoinova</strong> & <strong style="color: #fff;">OLMECA CODE</strong></p>
     </div>
   </footer>
 
@@ -942,6 +942,36 @@
         }
       }
       setTimeout(step, 400);
+    })();
+
+    // Distribuir dinámicamente los documentos para que siempre quepan en el contenedor
+    (function(){
+      var scene = document.getElementById('doc-scene');
+      if (!scene) return;
+      var cards = Array.prototype.slice.call(scene.querySelectorAll('.doc-card'));
+      function layoutDocs(){
+        if (cards.length === 0) return;
+        var r = scene.getBoundingClientRect();
+        var H = r.height - 16; // margen inferior de seguridad
+        // medir alturas actuales de las tarjetas (ya renderizadas)
+        var hs = cards.map(function(c){ return c.getBoundingClientRect().height; });
+        var sumH = hs.reduce(function(a,b){ return a+b; }, 0);
+        var gaps = Math.max(0, cards.length - 1);
+        var gap = Math.max(10, Math.floor((H - sumH) / (gaps || 1))); // repartir espacio
+        var y = 8; // padding superior
+        cards.forEach(function(c, i){
+          c.style.top = y + 'px';
+          y += hs[i] + gap;
+        });
+      }
+      // llamar al cargar y en redimensionar
+      window.addEventListener('load', layoutDocs);
+      window.addEventListener('resize', function(){
+        // esperar a reflow
+        setTimeout(layoutDocs, 50);
+      });
+      // también cuando se revelan
+      setTimeout(layoutDocs, 300);
     })();
 
     // Reveal on scroll with IntersectionObserver

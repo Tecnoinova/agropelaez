@@ -5,6 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Productos - Agroequipos Pelaez</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .card--carousel{position:relative}
+    .card--carousel .actions{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+    .icon-btn{border:none;border-radius:999px;padding:8px;min-width:34px;min-height:34px;background:rgba(0,0,0,.55);color:#fff;cursor:pointer}
+    .cart-fab{position:fixed;right:16px;bottom:16px;z-index:50;background:#2563eb;color:#fff;border:none;border-radius:999px;padding:10px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    .cart-fab .badge{background:#fff;color:#2563eb;border-radius:999px;padding:2px 8px;font-weight:800}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:flex-start;justify-content:center;z-index:2000;padding-top:10vh}
+    .modal.open{display:flex}
+    .modal-card{width:min(680px,92vw);max-height:80vh;background:#fff;color:#111;border:1px solid rgba(0,0,0,.12);border-radius:14px;overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.35)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.12)}
+    .modal-body{padding:16px;max-height:calc(90vh - 56px);overflow:auto}
+    .modal .close{border:none;background:transparent;color:#111;font-size:22px;cursor:pointer}
+    .modal .price{font-weight:900}
+    .toast{position:fixed;right:16px;top:16px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:14px 18px;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s ease, transform .18s ease;z-index:9999;display:flex;gap:10px;align-items:center;font-weight:800}
+    .toast.show{opacity:1;transform:translateY(2px)}
+    .toast .icon{background:rgba(255,255,255,.2);border-radius:999px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+    @keyframes badge-pop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+    .badge.pop{animation:badge-pop .4s ease}
+
+    /* Tema oscuro: mejorar contraste del navbar y legibilidad */
+    html[data-theme="dark"] header{background:rgba(10,10,14,.55);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    html[data-theme="dark"] .nav .menu a{color:#e5e7eb !important;text-shadow:none}
+    html[data-theme="dark"] .nav .brand span{color:#f3f4f6 !important}
+    html[data-theme="dark"] .btn[data-theme-toggle]{background:rgba(255,255,255,.08);color:#e5e7eb;border:1px solid rgba(255,255,255,.12)}
+    html[data-theme="dark"] .nav .menu a:hover{color:#ffffff !important}
+  </style>
 </head>
 <body class="modern">
   <header>
@@ -24,6 +50,115 @@
           <a href="#galeras">Galeras</a>
         </div>
 
+  <!-- Modal de Checkout: datos del cliente y fiscales -->
+  <div class="modal" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong id="checkout-title">Datos para solicitud de pago</strong>
+        <button class="close" type="button" id="checkout-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="checkout-form" style="display:grid;grid-template-columns:1fr 1fr;gap:12px" method="post" action="#">
+          <!-- Paso 1: Datos de contacto y entrega -->
+          <div id="checkout-step-1" style="grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="grid-column:span 1">
+              <label>Nombre / Contacto<br><input id="c-nombre" type="text" style="width:100%" required></label>
+            </div>
+            <div style="grid-column:span 1">
+              <label>Correo electrónico<br><input id="c-email" type="email" style="width:100%" required></label>
+            </div>
+            <div style="grid-column:span 1">
+              <label>Teléfono (WhatsApp)<br><input id="c-tel" type="tel" style="width:100%" required></label>
+            </div>
+            <div style="grid-column:span 1">
+              <label>Dirección de entrega<br><input id="c-dir" type="text" style="width:100%" required></label>
+            </div>
+            <div style="grid-column:span 1">
+              <label>RFC (opcional)<br><input id="c-rfc" type="text" style="width:100%"></label>
+            </div>
+            <div style="grid-column:span 1">
+              <label>Uso CFDI (opcional)<br><input id="c-cfdi" type="text" style="width:100%" placeholder="G01/G03/etc."></label>
+            </div>
+            <div style="grid-column:span 2">
+              <label>Razón social / Domicilio fiscal (opcional)<br><input id="c-razon" type="text" style="width:100%"></label>
+            </div>
+            <div style="grid-column:span 2">
+              <label>Notas / Requerimientos<br><textarea id="c-notas" rows="3" style="width:100%"></textarea></label>
+            </div>
+          </div>
+
+          <!-- Paso 2: Forma de pago -->
+          <div id="checkout-step-2" style="grid-column:span 2;display:none">
+            <strong style="grid-column:span 2">Forma de pago</strong>
+            <div style="grid-column:span 2;display:grid;gap:10px">
+              <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Tarjeta" id="p-tarjeta" checked> Tarjeta (débito/crédito)</label>
+              <div id="p-tarjeta-fields" style="margin-left:26px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <input type="text" id="card-number" placeholder="Número de tarjeta"/>
+                <input type="text" id="card-name" placeholder="Nombre en la tarjeta"/>
+                <input type="text" id="card-exp" placeholder="MM/AA"/>
+                <input type="text" id="card-cvv" placeholder="CVV"/>
+              </div>
+              <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Transferencia" id="p-trans"> Transferencia (CLABE)</label>
+              <div id="p-trans-fields" style="margin-left:26px;display:none">
+                <small>Te compartiremos los datos bancarios al confirmar.</small>
+              </div>
+              <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="pago" value="Contra entrega" id="p-contra"> Contra entrega</label>
+              <div id="p-contra-fields" style="margin-left:26px;display:none">
+                <small>Pago al recibir. Aplica en zonas seleccionadas.</small>
+              </div>
+            </div>
+            <div style="grid-column:span 2;border-top:1px solid rgba(0,0,0,.12);padding-top:10px;margin-top:6px">
+              <strong>Resumen del pedido</strong>
+              <div id="checkout-summary" style="margin-top:8px;display:grid;gap:6px"></div>
+            </div>
+          </div>
+
+          <!-- Campos ocultos estándar para backend -->
+          <input type="hidden" name="order[total]" id="f-total" />
+          <input type="hidden" name="order[shipping_address]" id="f-dir" />
+          <input type="hidden" name="customer[name]" id="f-name" />
+          <input type="hidden" name="customer[email]" id="f-email" />
+          <input type="hidden" name="customer[phone]" id="f-phone" />
+          <input type="hidden" name="customer[rfc]" id="f-rfc" />
+          <input type="hidden" name="customer[razon]" id="f-razon" />
+          <input type="hidden" name="customer[cfdi]" id="f-cfdi" />
+          <input type="hidden" name="order[payment_method]" id="f-forma" />
+          <input type="hidden" name="order[notes]" id="f-notes" />
+          <div style="grid-column:span 2;display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px">
+            <div id="checkout-steps-indicator" style="font-weight:800">Paso <span id="checkout-step-num">1</span> de 2</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" type="button" id="checkout-cancel">Cancelar</button>
+              <button class="btn" type="button" id="checkout-back" style="display:none">Regresar</button>
+              <button class="btn btn-primary" type="button" id="checkout-next">Siguiente</button>
+              <button class="btn btn-primary" type="submit" id="checkout-send" style="display:none">Generar solicitud de pago</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong id="cart-title">Carrito</strong>
+        <button class="close" type="button" id="cart-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="cart-list" style="display:grid;gap:10px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <strong>Total:</strong>
+          <span id="cart-total" class="price">$0</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+          <button class="btn" type="button" id="cart-clear">Vaciar</button>
+          <button class="btn" type="button" id="cart-close-btn">Cerrar</button>
+          <a class="btn btn-primary" id="cart-checkout" href="#" target="_blank">Solicitar pago</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
         <button class="btn" type="button" data-theme-toggle aria-pressed="false">Tema</button>
       </nav>
     </div>
@@ -42,57 +177,113 @@
               <button class="carousel-btn" type="button" data-carousel-next aria-label="Siguiente">&gt;</button>
             </div>
             <div class="carousel-track" role="list">
-              <a class="card card--carousel" role="listitem" href="#basculas">
+              <a class="card card--carousel" role="listitem" href="#basculas" data-key="basculas">
                 <div class="thumb" style="background-image:url('img/uploads/2021/09/bascula-para-ganado.jpg')"></div>
                 <div class="body">
                   <h3>Básculas</h3>
                   <p>Ganaderas, camioneras e industriales.</p>
                   <div class="meta"><span>#basculas</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
 
-              <a class="card card--carousel" role="listitem" href="#corrales">
+              <a class="card card--carousel" role="listitem" href="#corrales" data-key="corrales">
                 <div class="thumb" style="background-image:url('img/uploads/2021/09/corrales-de-manejo-para-ganado.jpg')"></div>
                 <div class="body">
                   <h3>Corrales</h3>
                   <p>Diseño y fabricación para manejo eficiente.</p>
                   <div class="meta"><span>#corrales</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
 
-              <a class="card card--carousel" role="listitem" href="#banos">
+              <a class="card card--carousel" role="listitem" href="#banos" data-key="banos">
                 <div class="thumb" style="background-image:url('img/uploads/2023/03/banos-garrapaticidas.jpg')"></div>
                 <div class="body">
                   <h3>Baños garrapaticidas</h3>
                   <p>Infraestructura para sanidad y control.</p>
                   <div class="meta"><span>#banos</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
 
-              <a class="card card--carousel" role="listitem" href="#remolques">
+              <a class="card card--carousel" role="listitem" href="#remolques" data-key="remolques">
                 <div class="thumb" style="background-image:url('img/uploads/2021/09/Remolques-ganaderos-y-cama-baja-pelaez-f1.jpg')"></div>
                 <div class="body">
                   <h3>Remolques</h3>
                   <p>Ganaderos, cama baja y cuello de ganso.</p>
                   <div class="meta"><span>#remolques</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
 
-              <a class="card card--carousel" role="listitem" href="#prensa">
+              <a class="card card--carousel" role="listitem" href="#prensa" data-key="prensa">
                 <div class="thumb" style="background-image:url('img/uploads/2021/09/prensa-para-ganado-becerro-vaca.jpg')"></div>
                 <div class="body">
                   <h3>Prensa ganadera</h3>
                   <p>Manejo y sujeción para trabajo en corral.</p>
                   <div class="meta"><span>#prensa</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
 
-              <a class="card card--carousel" role="listitem" href="#galeras">
+              <a class="card card--carousel" role="listitem" href="#galeras" data-key="galeras">
                 <div class="thumb" style="background-image:url('img/uploads/2021/09/Galeras-para-ganado-fondo-1.jpg')"></div>
                 <div class="body">
                   <h3>Galeras</h3>
                   <p>Estructuras para ranchos y manejo.</p>
                   <div class="meta"><span>#galeras</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
+                </div>
+              </a>
+
+              <a class="card card--carousel" role="listitem" href="#equipos" data-key="equipos">
+                <div class="thumb" style="background-image:url('img/uploads/2021/09/Equipos-para-rancho-y-ganado-fondo-1.jpg')"></div>
+                <div class="body">
+                  <h3>Equipos para rancho y ganado</h3>
+                  <p>Fabricación integral para operación diaria del rancho.</p>
+                  <div class="meta"><span>#equipos</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
+                </div>
+              </a>
+
+              <a class="card card--carousel" role="listitem" href="#fierros" data-key="fierros">
+                <div class="thumb" style="background-image:url('img/uploads/2021/09/prensa-para-ganado-becerro-vaca.jpg')"></div>
+                <div class="body">
+                  <h3>Fierros para marcar ganado</h3>
+                  <p>Diseños personalizados y fabricación robusta.</p>
+                  <div class="meta"><span>#fierros</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
+                </div>
+              </a>
+
+              <a class="card card--carousel" role="listitem" href="#remolques-ganaderos" data-key="remolques-ganaderos">
+                <div class="thumb" style="background-image:url('img/uploads/2021/09/Remolques-ganaderos-y-cama-baja-pelaez-f1.jpg')"></div>
+                <div class="body">
+                  <h3>Remolques ganaderos</h3>
+                  <p>Diseño para traslado seguro del ganado.</p>
+                  <div class="meta"><span>#remolquesganaderos</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
+                </div>
+              </a>
+
+              <a class="card card--carousel" role="listitem" href="#artesanias" data-key="artesanias">
+                <div class="thumb" style="background-image:url('img/uploads/2021/09/Equipos-para-rancho-y-ganado-fondo-1.jpg')"></div>
+                <div class="body">
+                  <h3>Artesanías finas</h3>
+                  <p>Trabajo artesanal con identidad regional.</p>
+                  <div class="meta"><span>#artesanias</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
+                </div>
+              </a>
+
+              <a class="card card--carousel" role="listitem" href="#basculas-camioneras" data-key="basculas-camioneras">
+                <div class="thumb" style="background-image:url('img/uploads/2021/09/bascula-camionera.jpg')"></div>
+                <div class="body">
+                  <h3>Básculas camioneras</h3>
+                  <p>Pesaje vehicular con obra civil y calibración.</p>
+                  <div class="meta"><span>#basculascamioneras</span></div>
+                  <div class="actions"><button class="icon-btn" data-info title="Info">ℹ</button><button class="icon-btn" data-buy title="Cotizar">$</button></div>
                 </div>
               </a>
             </div>
@@ -102,54 +293,425 @@
       </div>
     </section>
 
-    <section class="section" id="basculas" aria-label="Básculas">
-      <div class="container">
-        <h2>Básculas</h2>
-        <p>Fabricación, instalación y configuración según necesidad. Solicita cotización indicando capacidad, plataforma y calibración.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    <!-- Se eliminan secciones de lista completa: ahora cada card abre un modal con info y opción de cotizar -->
 
-    <section class="section" id="corrales" aria-label="Corrales">
-      <div class="container">
-        <h2>Corrales</h2>
-        <p>Proyectos a medida para flujo de ganado, manejo y seguridad. Incluye diseño, fabricación y montaje.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    
 
-    <section class="section" id="banos" aria-label="Baños garrapaticidas">
-      <div class="container">
-        <h2>Baños garrapaticidas</h2>
-        <p>Soluciones robustas para sanidad animal. Definimos medidas, capacidad y logística de instalación.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    
 
-    <section class="section" id="remolques" aria-label="Remolques">
-      <div class="container">
-        <h2>Remolques</h2>
-        <p>Ganaderos, cama baja y cuello de ganso. Configuración por capacidad, ejes, frenos y extras.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    
 
-    <section class="section" id="prensa" aria-label="Prensa ganadera">
-      <div class="container">
-        <h2>Prensa ganadera</h2>
-        <p>Manejo y sujeción para trabajo en corral. Definimos especificación, medidas y accesorios.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    
 
-    <section class="section" id="galeras" aria-label="Galeras">
-      <div class="container">
-        <h2>Galeras</h2>
-        <p>Estructuras para ranchos y manejo. Cotizamos por medidas, estructura y tipo de techo.</p>
-        <a class="btn btn-primary" href="index.html#contact-map">Solicitar cotización</a>
-      </div>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
   </main>
+  <button class="cart-fab" type="button" id="open-cart" aria-label="Abrir carrito">🛒 <span class="badge" id="cart-count">0</span></button>
+  <div class="modal" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong id="modal-title">Producto</strong>
+        <button class="close" type="button" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-desc">Descripción</p>
+        <div id="modal-variants" style="display:none">
+          <h4 style="margin:10px 0 6px">Tipos disponibles</h4>
+          <div id="variants-list" style="display:grid;gap:8px"></div>
+        </div>
+        <div id="modal-simple">
+          <p>Precio referencia: <span class="price" id="modal-price">—</span></p>
+          <div id="modal-actions">
+            <button class="btn btn-primary" type="button" id="modal-add">Agregar al carrito</button>
+            <div id="modal-qty" style="display:none;align-items:center;gap:8px;margin-top:8px">
+              <button class="icon-btn" type="button" id="modal-qty-minus">−</button>
+              <span id="modal-qty-count" class="price">1</span>
+              <button class="icon-btn" type="button" id="modal-qty-plus">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // Ajuste de UI: quitar botón $ y cambiar ℹ por +
+      document.querySelectorAll('.card--carousel .actions [data-buy]')
+        .forEach(function(b){ b.parentElement && b.parentElement.removeChild(b); });
+      document.querySelectorAll('.card--carousel .actions [data-info]')
+        .forEach(function(b){ b.textContent = '+'; b.setAttribute('title','Ver opciones'); });
+
+      const catalog = {
+        'basculas':{name:'Básculas', price: 38000, desc:'Ganaderas, camioneras e industriales. Fabricación y calibración.',
+          variants:[
+            {name:'Ganadera 2 t', price: 28000, features:['Plataforma 1.5 x 2.0 m','Indicador digital']},
+            {name:'Ganadera 5 t', price: 36000, features:['Plataforma 2.0 x 3.0 m','Celdas IP67']},
+            {name:'Camionera 18 m', price: 380000, features:['Obra civil','Bastidor metálico','Certificación']},
+            {name:'Industrial 1 t', price: 22000, features:['Plataforma 1.2 x 1.2 m','Indicador básico']}
+          ]
+        },
+        'corrales':{name:'Corrales', price: 52000, desc:'Diseño y fabricación de corrales de manejo.',
+          variants:[
+            {name:'Corral básico 10x10 m', price: 52000, features:['Tubería cédula 30','Portón simple']},
+            {name:'Corral con manga y embudo', price: 96000, features:['Manga de manejo','Trampa de embarque']},
+            {name:'Corral completo con prensa', price: 168000, features:['Manga','Embudos','Prensa integrada']}
+          ]
+        },
+        'banos':{name:'Baños garrapaticidas', price: 78000, desc:'Infraestructura para sanidad y control.',
+          variants:[
+            {name:'Baño 6 000 L', price: 78000, features:['Muros reforzados','Trampa de drenado']},
+            {name:'Baño 10 000 L', price: 112000, features:['Escalinata y pasarela','Protección anticorrosiva']}
+          ]
+        },
+        'remolques':{name:'Remolques', price: 65000, desc:'Ganaderos, cama baja y cuello de ganso.',
+          variants:[
+            {name:'Cama baja 2 ejes', price: 65000, features:['2 ejes 3.5 t','Rines 15"','Luces LED']},
+            {name:'Cuello de ganso 7 t', price: 145000, features:['Freno eléctrico','Rampa trasera']}
+          ]
+        },
+        'prensa':{name:'Prensa ganadera', price: 29000, desc:'Manejo y sujeción para trabajo en corral.',
+          variants:[
+            {name:'Prensa becerro', price: 29000, features:['Sujeción frontal','Ajustes laterales']},
+            {name:'Prensa vaca', price: 52000, features:['Doble compuerta','Rejillas laterales']}
+          ]
+        },
+        'galeras':{name:'Galeras', price: 110000, desc:'Estructuras para ranchos y manejo.',
+          variants:[
+            {name:'Galera 8x12 m', price: 110000, features:['Lámina galvanizada','Estructura PTR']},
+            {name:'Galera 12x20 m', price: 220000, features:['Canalón pluvial','Refuerzo viento']}
+          ]
+        },
+        'equipos':{name:'Equipos para rancho y ganado', price: 24000, desc:'Comederos, bebederos, mangas, portones, etc.',
+          variants:[
+            {name:'Comedero 3 m', price: 4800, features:['Acabado anticorrosivo']},
+            {name:'Bebedero 500 L', price: 5200, features:['Válvula flotador']},
+            {name:'Manga de manejo', price: 26500, features:['Paneles reforzados']}
+          ]
+        },
+        'fierros':{name:'Fierros para marcar ganado', price: 2800, desc:'Diseños personalizados. Opciones a fuego y eléctricos.',
+          variants:[
+            {name:'Fierro a fuego', price: 1800, features:['Diseño personalizado','Acero al carbón']},
+            {name:'Fierro eléctrico', price: 3800, features:['Resistencia protegida','Cable desmontable']}
+          ]
+        },
+        'remolques-ganaderos':{name:'Remolques ganaderos', price: 72000, desc:'Traslado seguro del ganado con múltiples configuraciones.',
+          variants:[
+            {name:'Ganadero 12 pies', price: 72000, features:['Eje 3.5 t','Puerta trasera']},
+            {name:'Ganadero 16 pies', price: 98000, features:['2 ejes','Ventanas laterales']}
+          ]
+        },
+        'artesanias':{name:'Artesanías finas', price: 1600, desc:'Trabajo artesanal con identidad regional.',
+          variants:[
+            {name:'Centro de mesa', price: 650, features:['Madera y herrería']},
+            {name:'Letrero personalizado', price: 1800, features:['Acabado rústico','Iniciales o logo']}
+          ]
+        },
+        'basculas-camioneras':{name:'Básculas camioneras', price: 380000, desc:'Pesaje vehicular con obra civil y calibración.',
+          variants:[
+            {name:'Camionera 18 m', price: 380000, features:['Obra civil','Bastidor metálico']},
+            {name:'Camionera 24 m', price: 520000, features:['Obra civil','Software e indicador']}
+          ]
+        }
+      };
+      const money = v=> new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0}).format(v);
+      const modal = document.getElementById('info-modal');
+      const mTitle = document.getElementById('modal-title');
+      const mDesc = document.getElementById('modal-desc');
+      const mPrice = document.getElementById('modal-price');
+      const mAdd = document.getElementById('modal-add');
+      const mSimple = document.getElementById('modal-simple');
+      const mVarWrap = document.getElementById('modal-variants');
+      const mVarList = document.getElementById('variants-list');
+      const mQtyWrap = document.getElementById('modal-qty');
+      const mQtyMinus = document.getElementById('modal-qty-minus');
+      const mQtyPlus = document.getElementById('modal-qty-plus');
+      const mQtyCount = document.getElementById('modal-qty-count');
+      const mClose = document.getElementById('modal-close');
+      const cartBtn = document.getElementById('open-cart');
+      const cartCount = document.getElementById('cart-count');
+      const cartModal = document.getElementById('cart-modal');
+      const cartClose = document.getElementById('cart-close');
+      const cartList = document.getElementById('cart-list');
+      const cartTotal = document.getElementById('cart-total');
+      const cartClear = document.getElementById('cart-clear');
+      const cartCheckout = document.getElementById('cart-checkout');
+      const toast = document.getElementById('toast');
+      // Checkout modal refs
+      const checkoutModal = document.getElementById('checkout-modal');
+      const checkoutClose = document.getElementById('checkout-close');
+      const checkoutForm = document.getElementById('checkout-form');
+      const cartCheckoutBtn = document.getElementById('cart-checkout');
+      let checkoutStep = 1;
+      let currentKey = null;
+      let cart = [];
+
+      function showToast(msg){
+        if(!toast) return; toast.innerHTML = `<span class="icon">✅</span><span>${msg}</span>`; toast.classList.add('show');
+        setTimeout(()=>toast.classList.remove('show'), 1400);
+      }
+
+      function findCartIndex(key, variantIdx){
+        return cart.findIndex(it => it.key === key && ((it.variant ?? null) === (variantIdx ?? null)));
+      }
+      function cartQty(key, variantIdx){
+        const i = findCartIndex(key, variantIdx);
+        return i >= 0 ? cart[i].qty : 0;
+      }
+      function setQty(key, variantIdx, qty){
+        const item = catalog[key]; if(!item) return;
+        const name = item.name + (typeof variantIdx === 'number' && item.variants && item.variants[variantIdx] ? ' · ' + item.variants[variantIdx].name : '');
+        const price = (typeof variantIdx === 'number' && item.variants && item.variants[variantIdx]) ? item.variants[variantIdx].price : item.price;
+        const idx = findCartIndex(key, variantIdx);
+        if (idx < 0){
+          if (qty > 0) cart.push({key, variant: variantIdx ?? null, name, qty, price});
+        } else {
+          if (qty <= 0) cart.splice(idx, 1); else cart[idx].qty = qty;
+        }
+        cartCount.textContent = String(totalQty());
+      }
+
+      function renderCart(){
+        let html = '';
+        let total = 0;
+        cart.forEach((it, i)=>{
+          total += (it.price * it.qty);
+          html += `<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px">
+            <div><strong>${it.name||it.key}</strong></div>
+            <div class="price">${money(it.price)}</div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <button class="icon-btn" data-cart-minus="${i}">−</button>
+              <span>${it.qty}</span>
+              <button class="icon-btn" data-cart-plus="${i}">+</button>
+            </div>
+            <button class="icon-btn" title="Eliminar" data-cart-remove="${i}">✕</button>
+          </div>`;
+        });
+        cartList.innerHTML = html || '<em>No hay productos en el carrito.</em>';
+        cartTotal.textContent = money(total);
+        // El enlace directo ya no se usa; ahora abrimos el modal de checkout
+        cartCheckout.href = '#';
+      }
+
+      function openCart(){ renderCart(); cartModal.classList.add('open'); }
+      function closeCart(){ cartModal.classList.remove('open'); }
+
+      function openModal(key){
+        const item = catalog[key]; if(!item) return;
+        currentKey = key;
+        mTitle.textContent = item.name;
+        mDesc.textContent = item.desc;
+        // Render según tenga variantes o no
+        if (item.variants && item.variants.length){
+          mSimple.style.display = 'none';
+          mVarWrap.style.display = 'block';
+          mVarList.innerHTML = item.variants.map((v,idx)=>{
+            const feats = (v.features||[]).map(f=>`<li>${f}</li>`).join('');
+            const q = cartQty(key, idx);
+            return `
+              <div style="border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:10px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
+                <div>
+                  <strong>${v.name}</strong>
+                  ${feats?`<ul style='margin:4px 0 0 16px'>${feats}</ul>`:''}
+                </div>
+                <div style="text-align:right">
+                  <div class="price">${money(v.price)}</div>
+                  ${q>0 ? `
+                    <div style="display:flex;gap:6px;justify-content:flex-end;align-items:center">
+                      <button class="icon-btn" data-qty-minus="${idx}">−</button>
+                      <span>${q}</span>
+                      <button class="icon-btn" data-qty-plus="${idx}">+</button>
+                    </div>
+                  ` : `<button class="btn btn-primary" type="button" data-add-variant="${idx}">Agregar</button>`}
+                </div>
+              </div>`;
+          }).join('');
+        } else {
+          mVarWrap.style.display = 'none';
+          mSimple.style.display = 'block';
+          mPrice.textContent = money(item.price);
+          const q = cartQty(key, null);
+          if (q>0){
+            mAdd.style.display = 'none';
+            mQtyWrap.style.display = 'flex';
+            mQtyCount.textContent = String(q);
+          } else {
+            mAdd.style.display = 'inline-block';
+            mQtyWrap.style.display = 'none';
+          }
+        }
+        modal.classList.add('open');
+      }
+      function closeModal(){ modal.classList.remove('open'); }
+      function addToCart(key, variantIdx){
+        const item = catalog[key]; if(!item) return;
+        let price = item.price; let name = item.name;
+        if (typeof variantIdx === 'number' && item.variants && item.variants[variantIdx]){
+          price = item.variants[variantIdx].price;
+          name = item.name + ' · ' + item.variants[variantIdx].name;
+        }
+        const idx = findCartIndex(key, variantIdx);
+        if (idx>=0) cart[idx].qty += 1; else cart.push({key, variant: variantIdx ?? null, name, qty:1, price});
+        cartCount.textContent = String(totalQty());
+        cartCount.classList.add('pop'); setTimeout(()=>cartCount.classList.remove('pop'), 420);
+        showToast(`${name} agregado al carrito`);
+      }
+
+      document.addEventListener('click', function(e){
+        const btn = e.target.closest('[data-info],[data-buy]');
+        if(btn){
+          const card = btn.closest('[data-key]');
+          const key = card && card.getAttribute('data-key');
+          if(!key) return;
+          if(btn.hasAttribute('data-info')){ openModal(key); }
+          else if(btn.hasAttribute('data-buy')){ addToCart(key); }
+        }
+      });
+      mAdd.addEventListener('click', ()=>{ if(currentKey){ addToCart(currentKey); openModal(currentKey); } });
+      // Delegación para agregar variantes
+      document.addEventListener('click', function(e){
+        const btnAdd = e.target.closest('[data-add-variant]');
+        if(btnAdd && currentKey){
+          const idx = Number(btnAdd.getAttribute('data-add-variant'));
+          addToCart(currentKey, idx); openModal(currentKey);
+        }
+        const btnPlus = e.target.closest('[data-qty-plus]');
+        if(btnPlus && currentKey){
+          const idx = Number(btnPlus.getAttribute('data-qty-plus'));
+          const q = cartQty(currentKey, idx) + 1; setQty(currentKey, idx, q); openModal(currentKey);
+        }
+        const btnMinus = e.target.closest('[data-qty-minus]');
+        if(btnMinus && currentKey){
+          const idx = Number(btnMinus.getAttribute('data-qty-minus'));
+          const q = Math.max(0, cartQty(currentKey, idx) - 1); setQty(currentKey, idx, q); openModal(currentKey);
+        }
+        const cPlus = e.target.closest('[data-cart-plus]');
+        if(cPlus){ const i = Number(cPlus.getAttribute('data-cart-plus')); setQty(cart[i].key, cart[i].variant, cart[i].qty+1); renderCart(); }
+        const cMinus = e.target.closest('[data-cart-minus]');
+        if(cMinus){ const i = Number(cMinus.getAttribute('data-cart-minus')); setQty(cart[i].key, cart[i].variant, Math.max(0, cart[i].qty-1)); renderCart(); }
+        const cRemove = e.target.closest('[data-cart-remove]');
+        if(cRemove){ const i = Number(cRemove.getAttribute('data-cart-remove')); setQty(cart[i].key, cart[i].variant, 0); renderCart(); }
+      });
+      // Controles de cantidad para producto simple
+      if (mQtyPlus) mQtyPlus.addEventListener('click', ()=>{ if(!currentKey) return; const q = cartQty(currentKey, null) + 1; setQty(currentKey, null, q); openModal(currentKey); });
+      if (mQtyMinus) mQtyMinus.addEventListener('click', ()=>{ if(!currentKey) return; const q = Math.max(0, cartQty(currentKey, null) - 1); setQty(currentKey, null, q); openModal(currentKey); });
+      mClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+      cartBtn.addEventListener('click', openCart);
+      cartClose.addEventListener('click', closeCart);
+      cartClear.addEventListener('click', ()=>{ cart = []; cartCount.textContent = String(totalQty()); renderCart(); });
+      cartModal.addEventListener('click', (e)=>{ if(e.target===cartModal) closeCart(); });
+      // Cerrar carrito al hacer click fuera del cuadro, en cualquier parte del documento
+      document.addEventListener('mousedown', (e)=>{
+        if(cartModal.classList.contains('open')){
+          if(!e.target.closest('#cart-modal .modal-card')) closeCart();
+        }
+      });
+      const cartCloseBtn = document.getElementById('cart-close-btn');
+      if (cartCloseBtn) cartCloseBtn.addEventListener('click', closeCart);
+      // Cerrar con ESC
+      document.addEventListener('keydown', (e)=>{
+        if(e.key==='Escape'){
+          if(modal.classList.contains('open')){ modal.classList.remove('open'); }
+          if(cartModal.classList.contains('open')){ cartModal.classList.remove('open'); }
+          if(checkoutModal.classList.contains('open')){ checkoutModal.classList.remove('open'); }
+        }
+      });
+
+      function totalQty(){ return cart.reduce((a,b)=>a + (Number(b.qty)||0), 0); }
+
+      // Flujo de checkout: abrir modal y enviar a WhatsApp con datos + carrito
+      function openCheckout(){
+        if (!cart.length){ showToast('Agrega productos antes de solicitar pago'); return; }
+        // Render de resumen
+        const sum = document.getElementById('checkout-summary');
+        if (sum){
+          let html = '';
+          cart.forEach((it,i)=>{
+            html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px">
+              <div>${it.name}</div>
+              <div>x${it.qty}</div>
+              <div class=\"price\">${money(it.price)}</div>
+            </div>`;
+          });
+          sum.innerHTML = html || '<em>Sin productos</em>';
+        }
+        // Popular campos ocultos
+        const totalText = (document.getElementById('cart-total').textContent||'').replace(/[^0-9.,]/g,'');
+        const set = (id, v)=>{ const el=document.getElementById(id); if(el) el.value=v; };
+        set('f-total', totalText);
+        set('f-name', (document.getElementById('c-nombre').value||''));
+        set('f-email', (document.getElementById('c-email').value||''));
+        set('f-phone', (document.getElementById('c-tel').value||''));
+        set('f-dir', (document.getElementById('c-dir').value||''));
+        set('f-rfc', (document.getElementById('c-rfc').value||''));
+        set('f-razon', (document.getElementById('c-razon').value||''));
+        set('f-cfdi', (document.getElementById('c-cfdi').value||''));
+        // forma de pago dependerá del paso 2
+        set('f-notes', (document.getElementById('c-notas').value||''));
+        // Remover previos items ocultos
+        [...document.querySelectorAll('input[name^="items["]')].forEach(n=>n.parentNode.removeChild(n));
+        const form = document.getElementById('checkout-form');
+        if (form){
+          cart.forEach((it,i)=>{
+            ['name','qty','price'].forEach((k)=>{
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = `items[${i}][${k}]`;
+              input.value = k==='name'? it.name : (k==='qty'? it.qty : it.price);
+              form.appendChild(input);
+            });
+          });
+        }
+        checkoutStep = 1; renderCheckoutStep();
+        checkoutModal.classList.add('open');
+      }
+      function closeCheckout(){ checkoutModal.classList.remove('open'); }
+      if (cartCheckoutBtn) cartCheckoutBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        if (!cart.length){ showToast('Agrega productos antes de solicitar pago'); return; }
+        try{
+          localStorage.setItem('agro_cart', JSON.stringify(cart));
+        }catch(err){ /* ignore */ }
+        window.location.href = 'pago.html';
+      });
+      if (checkoutClose) checkoutClose.addEventListener('click', closeCheckout);
+      const checkoutCancel = document.getElementById('checkout-cancel');
+      if (checkoutCancel) checkoutCancel.addEventListener('click', closeCheckout);
+      if (checkoutForm) checkoutForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        // Aquí se podría enviar el form a un backend real con fetch o permitir el submit estándar.
+        // Por ahora, mantenemos la experiencia por WhatsApp como fallback.
+        const nombre = (document.getElementById('c-nombre').value||'').trim();
+        const email = (document.getElementById('c-email').value||'').trim();
+        const tel = (document.getElementById('c-tel').value||'').trim();
+        const dir = (document.getElementById('c-dir').value||'').trim();
+        const rfc = (document.getElementById('c-rfc').value||'').trim();
+        const razon = (document.getElementById('c-razon').value||'').trim();
+        const cfdi = (document.getElementById('c-cfdi').value||'').trim();
+        const forma = (document.querySelector('input[name="pago"]:checked')?.value||'Tarjeta');
+        const notas = (document.getElementById('c-notas').value||'').trim();
+        const detalle = cart.map(it=>`${it.name||it.key} x${it.qty} ${money(it.price)}`).join('%0A');
+        const total = document.getElementById('cart-total').textContent;
+        const header = 'Solicitud de pago · Agroequipos Pelaez';
+        const cliente = `Cliente: ${nombre}%0AEmail: ${email}%0ATeléfono: ${tel}%0ADirección: ${dir}`;
+        const fiscal = `RFC: ${rfc}%0ARazón/Domicilio: ${razon}%0AUso CFDI: ${cfdi}%0AForma/Método: ${forma}`;
+        const cuerpo = `${header}%0A%0A${cliente}%0A${fiscal}%0A%0AProductos:%0A${detalle}%0A%0ATotal: ${encodeURIComponent(total)}%0A%0ANotas:%0A${encodeURIComponent(notas)}`;
+        const wa = `https://wa.me/5210000000000?text=${cuerpo}`;
+        window.open(wa, '_blank');
+        closeCheckout();
+      });
+    })();
+  </script>
 
   <script src="script.js" defer></script>
 </body>
