@@ -34,17 +34,43 @@
     /* System demo (terminal + docs) */
     .demo-surface{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);overflow:hidden;min-height:260px;box-shadow:0 10px 26px rgba(0,0,0,.18)}
     html[data-theme="light"] .demo-surface{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
-    .terminal{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;color:#e5e7eb;background:linear-gradient(180deg, rgba(2,6,23,.85), rgba(2,6,23,.78));height:100%;display:flex;flex-direction:column;font-size:13px}
+    .terminal{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;color:#e5e7eb;background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.78));height:100%;display:flex;flex-direction:column;font-size:13px}
     html[data-theme="light"] .terminal{color:#111827;background:linear-gradient(180deg, rgba(243,244,246,.9), rgba(229,231,235,.85))}
     .term-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
     html[data-theme="light"] .term-head{border-color:rgba(17,24,39,.10)}
     .term-dot{width:10px;height:10px;border-radius:999px}
     .term-dot.red{background:#ef4444}.term-dot.yellow{background:#f59e0b}.term-dot.green{background:#10b981}
     .term-body{padding:14px 16px;flex:1;overflow:hidden}
-    .line{opacity:.9}
+    .line{opacity:.95}
+    .line .prompt{color:#22d3ee;font-weight:700}
+    .line .cmd{color:#a78bfa;font-weight:800}
+    .line .opt{color:#60a5fa}
+    .line .val{color:#f472b6}
+    .line .num{color:#34d399}
     .caret{display:inline-block;width:10px;height:16px;background:#22d3ee;margin-left:2px;animation:blink 1s steps(1) infinite}
     @keyframes blink{50%{opacity:0}}
     .shot-stack.demo-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
+    /* Cinematic flow */
+    .flow-surface{position:relative;padding:18px;min-height:260px}
+    .flow-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+    .flow-node{position:absolute;min-width:140px;max-width:200px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);opacity:0;transform:scale(.92);transition:opacity .45s ease, transform .45s ease}
+    html[data-theme="light"] .flow-node{border-color:rgba(17,24,39,.10);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .flow-node b{display:block;color:var(--text);letter-spacing:.10em;text-transform:uppercase;font-size:12px;margin-bottom:4px}
+    .flow-node span{color:var(--muted);font-weight:700}
+    .flow-node.show{opacity:1;transform:none}
+    .flow-edge{fill:none;stroke:url(#flowGrad);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 6px rgba(0,0,0,.18))}
+    .flow-dot{fill:#3b82f6; transform-box: fill-box; transform-origin: center}
+    .flow-dot.blink{animation:blink 2.4s infinite}
+    .flow-dot.throb{animation:throb 1.8s ease-in-out infinite}
+    @keyframes throb{0%{transform:scale(0.92);opacity:.9}50%{transform:scale(1.08);opacity:1}100%{transform:scale(0.92);opacity:.9}}
+    .flow-node.pulse{box-shadow:0 0 0 0 rgba(59,130,246,.35);animation:pulseNode 1.6s ease-out}
+    @keyframes pulseNode{0%{box-shadow:0 0 0 0 rgba(59,130,246,.45)}70%{box-shadow:0 0 0 18px rgba(59,130,246,0)}100%{box-shadow:0 0 0 0 rgba(59,130,246,0)}}
+    .flow-switch{position:absolute;right:12px;top:12px;z-index:2;display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);font-weight:800;color:var(--text);font-size:12px}
+    html[data-theme="light"] .flow-switch{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.04)}
+    .flow-switch button{appearance:none;border:0;background:transparent;color:var(--text);font-weight:900;cursor:pointer}
+    .flow-switch .pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
+    html[data-theme="light"] .flow-switch .pill{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.06)}
     .doc-scene{position:relative}
     .doc-card{position:absolute;right:10px;left:10px;top:10px;border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);transform:translateY(12px) scale(.98);opacity:0}
     html[data-theme="light"] .doc-card{border-color:rgba(17,24,39,.10);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
@@ -297,11 +323,43 @@
           </p>
 
           <div class="hero-collage" aria-label="Vista general del sistema">
-            <!-- Panel grande reservado (video futuro) -->
-            <div class="demo-surface" aria-label="Vista general">
-              <div class="cap" style="position:static;gap:6px;text-align:center;padding:18px 12px">
-                <b>Vista general</b>
-                <span>Espacio reservado para video demostrativo del sistema.</span>
+            <!-- Panel grande con animación "cinematográfica" del flujo -->
+            <div class="demo-surface flow-surface" aria-label="Vista general" id="flow-surface">
+              <div class="flow-switch" aria-label="Cambiar disposición">
+                <span class="pill" id="flow-mode-label">Circular</span>
+                <button id="flow-toggle" title="Cambiar a Escalera">Cambiar</button>
+              </div>
+              <svg class="flow-svg" id="flow-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#3b82f6" />
+                    <stop offset="50%" stop-color="#8b5cf6" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                  </linearGradient>
+                  <marker id="arrowGrad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="url(#flowGrad)" />
+                  </marker>
+                </defs>
+              </svg>
+              <div class="flow-node" id="n1" style="left:6%;top:12%">
+                <b>Captura</b>
+                <span>Orden de venta</span>
+              </div>
+              <div class="flow-node" id="n2" style="left:38%;top:12%">
+                <b>Validación</b>
+                <span>Inventario</span>
+              </div>
+              <div class="flow-node" id="n3" style="left:70%;top:6%">
+                <b>Documentos</b>
+                <span>OC / OS / Garantía</span>
+              </div>
+              <div class="flow-node" id="n4" style="left:70%;top:32%">
+                <b>Transporte / Envío</b>
+                <span>Ruta y costos</span>
+              </div>
+              <div class="flow-node" id="n5" style="left:38%;top:56%">
+                <b>Entrega</b>
+                <span>Envío programado</span>
               </div>
             </div>
 
@@ -556,6 +614,235 @@
       }catch(e){}
     })();
 
+    // Cinematic flow: dibujar aristas y revelar nodos con stagger
+    (function(){
+      var svg = document.getElementById('flow-svg');
+      var surface = document.getElementById('flow-surface');
+      var n1 = document.getElementById('n1');
+      var n2 = document.getElementById('n2');
+      var n3 = document.getElementById('n3');
+      var n4 = document.getElementById('n4');
+      var n5 = document.getElementById('n5');
+      if (!svg || !n1) return;
+
+      function toLocal(x, y){
+        var pt = svg.createSVGPoint(); pt.x = x; pt.y = y;
+        var m = svg.getScreenCTM();
+        if (m && m.inverse) return pt.matrixTransform(m.inverse());
+        return pt; // fallback
+      }
+      function bboxLocal(el){
+        var r = el.getBoundingClientRect();
+        var l1 = toLocal(r.left, r.top);
+        var l2 = toLocal(r.right, r.bottom);
+        return { x:l1.x, y:l1.y, w:(l2.x-l1.x), h:(l2.y-l1.y) };
+      }
+      function midLeft(b){ return { x:b.x, y:b.y + b.h/2 }; }
+      function midRight(b){ return { x:b.x + b.w, y:b.y + b.h/2 }; }
+      function midTop(b){ return { x:b.x + b.w/2, y:b.y }; }
+      function midBottom(b){ return { x:b.x + b.w/2, y:b.y + b.h }; }
+      function topLeft(b){ return { x:b.x, y:b.y }; }
+      function bottomLeft(b){ return { x:b.x, y:b.y + b.h }; }
+
+      function cubicPath(p1, p2, kx, ky){
+        var cx = p1.x + (p2.x - p1.x) * (kx==null?0.6:kx);
+        var c1 = { x: cx, y: p1.y + (ky==null?32:ky) };
+        var c2 = { x: cx, y: p2.y - (ky==null?32:ky) };
+        return `M ${p1.x},${p1.y} C ${c1.x},${c1.y} ${c2.x},${c2.y} ${p2.x},${p2.y}`;
+      }
+
+      function pathBetween(a, b, mode){
+        var ba = bboxLocal(a), bb = bboxLocal(b);
+        if (mode === 'h'){
+          var p1 = midRight(ba), p2 = midLeft(bb);
+          return cubicPath(p1, p2, 0.5, 0);
+        } else if (mode === 'v') { // vertical
+          var q1 = midBottom(ba), q2 = midTop(bb);
+          return cubicPath(q1, q2, 0.5, 40);
+        } else if (mode === 'corner') { // de esquina inferior izquierda a esquina superior izquierda
+          var c1 = bottomLeft(ba), c2 = topLeft(bb);
+          var kx1 = c1.x - 28, ky1 = c1.y + 22;
+          var kx2 = c2.x - 28, ky2 = c2.y - 22;
+          return `M ${c1.x},${c1.y} C ${kx1},${ky1} ${kx2},${ky2} ${c2.x},${c2.y}`;
+        } else { // auto: elegir por delta dominante
+          var dx = (bb.x + bb.w/2) - (ba.x + ba.w/2);
+          var dy = (bb.y + bb.h/2) - (ba.y + ba.h/2);
+          if (Math.abs(dx) >= Math.abs(dy)){
+            var p1a = dx >= 0 ? midRight(ba) : midLeft(ba);
+            var p2a = dx >= 0 ? midLeft(bb) : midRight(bb);
+            return cubicPath(p1a, p2a, 0.55, 0);
+          } else {
+            var q1a = dy >= 0 ? midBottom(ba) : midTop(ba);
+            var q2a = dy >= 0 ? midTop(bb) : midBottom(bb);
+            return cubicPath(q1a, q2a, 0.5, 40);
+          }
+        }
+      }
+
+      function addEdge(a, b, mode, opts){
+        var reusePath = opts && opts.path;
+        var p = reusePath || document.createElementNS('http://www.w3.org/2000/svg','path');
+        if (!reusePath){
+          p.setAttribute('d', pathBetween(a,b,mode));
+          p.setAttribute('class','flow-edge');
+          p.setAttribute('stroke-dasharray','5 9');
+          p.setAttribute('opacity','0');
+          p.setAttribute('marker-end','url(#arrowGrad)');
+          svg.appendChild(p);
+          requestAnimationFrame(function(){
+            p.setAttribute('opacity','1');
+            // efecto de "dibujo" del trazo
+            var len = p.getTotalLength();
+            p.style.strokeDasharray = len + ' ' + len;
+            p.style.strokeDashoffset = len;
+            p.getBoundingClientRect(); // force layout
+            p.style.transition = 'stroke-dashoffset 900ms ease';
+            p.style.strokeDashoffset = '0';
+          });
+        }
+
+        var animate = opts && opts.animate;
+        var onDone = (opts && opts.onDone) || function(){};
+        if (!animate){ return p; }
+
+        var len2 = p.getTotalLength();
+        var speed = (opts && opts.speed) || 1.0; // ritmo pausado
+        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('r','12');
+        dot.setAttribute('class','flow-dot blink throb');
+        svg.appendChild(dot);
+        var t = 0;
+        (function step(){
+          t = Math.min(t + speed, len2);
+          var pt = p.getPointAtLength(t);
+          dot.setAttribute('cx', pt.x);
+          dot.setAttribute('cy', pt.y);
+          if (t >= len2){
+            dot.remove();
+            b.classList.add('pulse');
+            setTimeout(function(){ b.classList.remove('pulse'); onDone(); }, 380);
+          } else {
+            requestAnimationFrame(step);
+          }
+        })();
+        return p;
+      }
+
+      function drawAll(mode){
+        // limpiar aristas existentes
+        Array.prototype.slice.call(svg.querySelectorAll('.flow-edge, .flow-dot')).forEach(function(n){ n.remove(); });
+        var m = mode || currentLayout;
+        var edges = (m === 'stair') ? stairEdges : circularEdges;
+        // dibujar todas las aristas (estáticas) y preparar pipeline
+        var paths = edges.map(function(e){ return addEdge(e[0], e[1], e[2], { animate:false }); });
+
+        function animateEdgeAt(index, done){
+          var e = edges[index];
+          addEdge(e[0], e[1], e[2], { animate:true, speed:1.0, path: paths[index], onDone: done });
+        }
+
+        // pipeline: cuando un tramo termina, dispara el siguiente; al terminar el último, lanza uno nuevo desde el primero
+        function startPipeline(){
+          function step(k){
+            animateEdgeAt(k, function(){
+              // al completar tramo k, lanzar el siguiente
+              var next = k + 1;
+              if (next < edges.length){
+                step(next);
+              } else {
+                // llegó al último tramo: tras una pausa corta, iniciar un nuevo dot desde el primer tramo
+                setTimeout(function(){ step(0); }, 600);
+              }
+            });
+          }
+          // arranca en el primer tramo
+          step(0);
+        }
+
+        startPipeline();
+      }
+
+      // Revelar nodos con escalonado
+      var nodes = [n1,n2,n3,n4,n5];
+      nodes.forEach(function(n,i){ setTimeout(function(){ n.classList.add('show'); }, 200 + i*180); });
+
+      // Layouts
+      var currentLayout = 'circular';
+      // Posiciones circulares se calcularán dinámicamente en applyCircularLayout()
+      var circularPos = [];
+      var stairPos = [
+        {left:'12%', top:'8%'},    // n1 Captura (fila 1)
+        {left:'24%', top:'24%'},   // n2 Validación (fila 2)
+        {left:'36%', top:'40%'},   // n3 Documentos (fila 3)
+        {left:'48%', top:'56%'},   // n4 Transporte (fila 4)
+        {left:'60%', top:'72%'}    // n5 Entrega (fila 5)
+      ];
+
+      // Aristas explícitas por layout [origen, destino, modo]
+      var circularEdges = [
+        [n1,n2,'auto'],
+        [n2,n3,'auto'],
+        [n3,n4,'auto'],
+        [n4,n5,'auto']
+        // retorno opcional: [n5,n1,'auto']
+      ];
+      var stairEdges = [
+        [n1,n2,'corner'],
+        [n2,n3,'corner'],
+        [n3,n4,'corner'],
+        [n4,n5,'corner']
+      ];
+
+      function applyLayout(mode){
+        currentLayout = mode;
+        if (mode === 'stair'){
+          var arr = stairPos;
+          [n1,n2,n3,n4,n5].forEach(function(n,i){ n.style.left = arr[i].left; n.style.top = arr[i].top; });
+        } else {
+          applyCircularLayout();
+        }
+        document.getElementById('flow-mode-label').textContent = mode === 'stair' ? 'Escalera' : 'Circular';
+        var toggle = document.getElementById('flow-toggle');
+        toggle.title = mode === 'stair' ? 'Cambiar a Circular' : 'Cambiar a Escalera';
+        setTimeout(function(){ drawAll(mode); }, 50);
+      }
+
+      function applyCircularLayout(){
+        // Coloca nodos en círculo perfecto dentro de flow-surface
+        var surf = document.getElementById('flow-surface');
+        var s = surf.getBoundingClientRect();
+        var w = s.width, h = s.height;
+        var cx = w * 0.5, cy = h * 0.5;
+        var r = Math.min(w, h) * 0.36; // radio
+        // Ángulos en grados desde la parte superior, en sentido horario
+        var deg = [-90, -30, 20, 150, -150]; // 12, 2, 3:40, 7:30, 10
+        var nodesArr = [n1,n2,n3,n4,n5];
+        nodesArr.forEach(function(node, i){
+          var a = deg[i] * Math.PI / 180;
+          // centro del nodo
+          var nx = cx + r * Math.cos(a);
+          var ny = cy + r * Math.sin(a);
+          // tamaño del nodo
+          var nw = node.offsetWidth || 180;
+          var nh = node.offsetHeight || 72;
+          // top-left para posicionar por CSS
+          node.style.left = (nx - nw/2) + 'px';
+          node.style.top  = (ny - nh/2) + 'px';
+        });
+      }
+
+      // Inicial
+      setTimeout(function(){ applyLayout('circular'); }, 700);
+      window.addEventListener('resize', function(){ setTimeout(function(){ drawAll(currentLayout); }, 120); });
+      var toggler = document.getElementById('flow-toggle');
+      if (toggler){
+        toggler.addEventListener('click', function(e){
+          e.stopPropagation();
+          applyLayout(currentLayout === 'circular' ? 'stair' : 'circular');
+        });
+      }
+    })();
+
     let currentDestination = '';
 
     function showSiteWarning() {
@@ -609,6 +896,19 @@
         box.appendChild(p);
         box.scrollTop = box.scrollHeight;
       }
+      function colorize(txt){
+        // añadir prompt si inicia con '$ '
+        var out = txt.replace(/^\$\s+/, function(m){ return '<span class="prompt">$</span> '; });
+        // comandos conocidos al inicio
+        out = out.replace(/(^|>\s*)(login|orden|item|calcular|generar|enviar)(?=\b)/, function(_, p1, cmd){ return p1 + '<span class="cmd">'+cmd+'</span>'; });
+        // opciones tipo --flag
+        out = out.replace(/(--[a-zA-Z-]+)/g, '<span class="opt">$1</span>');
+        // números y montos
+        out = out.replace(/(?<![A-Za-z])(\d+)(?![A-Za-z])/g, '<span class="num">$1</span>');
+        // valores con guiones (SKU-xxxx, EP-001, A12-9X)
+        out = out.replace(/\b([A-Z]{2,}-?[0-9A-Z-]+)\b/g, '<span class="val">$1</span>');
+        return out;
+      }
       function typeLine(t, cb){
         var row = document.createElement('div');
         row.className = 'line';
@@ -620,11 +920,11 @@
         var i=0; var id = setInterval(function(){
           span.textContent = t.slice(0, ++i);
           box.scrollTop = box.scrollHeight;
-          if (i>=t.length){ clearInterval(id); caret.remove(); if(cb) setTimeout(cb, 220); }
+          if (i>=t.length){ clearInterval(id); caret.remove(); span.innerHTML = colorize(span.textContent); if(cb) setTimeout(cb, 220); }
         }, 18);
       }
       var script = [
-        'login tecnoinnova@erp',
+        'login agroequipospelaez@erop',
         'orden nueva --cliente EP-001',
         'item agregar SKU-4002 --cantidad 1 --precio 245000',
         'calcular totales',
