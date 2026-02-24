@@ -4,13 +4,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Propuesta · Olmeca Code · Agroequipos Pelaez</title>
+  <title>Propuesta · Tecno Innova · Agroequipos Pelaez</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body.modern .letter{max-width:980px;margin:0 auto;padding:48px 0 72px}
     body.modern .letter-card{border-radius:22px;border:1px solid var(--border);background:rgba(255,255,255,.04);box-shadow:0 18px 50px rgba(0,0,0,.28);overflow:hidden}
-    body.modern .letter-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 22px;border-bottom:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02))}
-    html[data-theme="light"] body.modern .letter-head{background:linear-gradient(180deg, rgba(17,24,39,.04), rgba(17,24,39,.02))}
+    body.modern .letter-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 22px;border-bottom:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    html[data-theme="light"] body.modern .letter-head{background:linear-gradient(180deg, rgba(17,24,39,.04), rgba(17,24,39,.02));box-shadow: inset 0 1px 0 rgba(17,24,39,.06)}
+    body.modern .letter-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);opacity:.95;
+    }
     body.modern .letter-brand{display:flex;align-items:center;gap:14px}
     body.modern .letter-brand img{width:48px;height:48px;border-radius:16px;object-fit:contain;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
     html[data-theme="light"] body.modern .letter-brand img{background:rgba(17,24,39,.04);border-color:rgba(17,24,39,.10)}
@@ -22,7 +27,35 @@
     body.modern .letter-body h1{margin:0 0 10px;font-size:clamp(22px,2.8vw,30px);letter-spacing:-.02em;color:var(--text)}
     body.modern .letter-body p{margin:12px 0;color:var(--muted);line-height:1.75}
     body.modern .sub{margin:8px 0 0;color:var(--muted);max-width:70ch}
+    body.modern .sub.remate{margin:26px auto 0;text-align:center;max-width:75ch;color:var(--muted);font-weight:700}
+    body.modern .sub.remate::before{content:"";display:block;width:140px;height:4px;margin:0 auto 12px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);border-radius:999px;opacity:.95}
     body.modern .hero-collage{margin-top:16px;display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+    /* System demo (terminal + docs) */
+    .demo-surface{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);overflow:hidden;min-height:260px;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+    html[data-theme="light"] .demo-surface{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
+    .terminal{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;color:#e5e7eb;background:linear-gradient(180deg, rgba(2,6,23,.85), rgba(2,6,23,.78));height:100%;display:flex;flex-direction:column;font-size:13px}
+    html[data-theme="light"] .terminal{color:#111827;background:linear-gradient(180deg, rgba(243,244,246,.9), rgba(229,231,235,.85))}
+    .term-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+    html[data-theme="light"] .term-head{border-color:rgba(17,24,39,.10)}
+    .term-dot{width:10px;height:10px;border-radius:999px}
+    .term-dot.red{background:#ef4444}.term-dot.yellow{background:#f59e0b}.term-dot.green{background:#10b981}
+    .term-body{padding:14px 16px;flex:1;overflow:hidden}
+    .line{opacity:.9}
+    .caret{display:inline-block;width:10px;height:16px;background:#22d3ee;margin-left:2px;animation:blink 1s steps(1) infinite}
+    @keyframes blink{50%{opacity:0}}
+    .shot-stack.demo-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
+    .doc-scene{position:relative}
+    .doc-card{position:absolute;right:10px;left:10px;top:10px;border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);transform:translateY(12px) scale(.98);opacity:0}
+    html[data-theme="light"] .doc-card{border-color:rgba(17,24,39,.10);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .doc-card b{display:block;color:var(--text);font-size:13px;letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
+    .doc-meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+    .doc-pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+    html[data-theme="light"] .doc-pill{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.04)}
+    .doc-card.show{opacity:1;transform:none;transition:opacity .45s ease, transform .45s ease}
+    .doc-card:nth-child(1){top:12px}
+    .doc-card:nth-child(2){top:122px}
+    .doc-card:nth-child(3){top:232px}
     body.modern .shot{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);position:relative;min-height:220px}
     html[data-theme="light"] body.modern .shot{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
     body.modern .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.45) 100%)}
@@ -44,18 +77,48 @@
     body.modern .cap-card .mini{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
     body.modern .cap-card .mini .pill{font-size:11px}
     body.modern .value-row{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    body.modern .value{border-radius:18px;border:1px dashed rgba(255,255,255,.16);padding:14px 14px;color:var(--muted);background:rgba(255,255,255,.02)}
-    html[data-theme="light"] body.modern .value{border-color:rgba(17,24,39,.14)}
+    body.modern .value{position:relative;overflow:hidden;border-radius:18px;padding:16px 16px;color:var(--muted);
+      background: linear-gradient(180deg, var(--glass-1, rgba(255,255,255,.06)), transparent);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 26px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    html[data-theme="light"] body.modern .value{border-color:rgba(17,24,39,.12);background:linear-gradient(180deg, rgba(17,24,39,.03), rgba(17,24,39,.0))}
+    body.modern .value::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+      opacity:.95;
+    }
+    body.modern .value::after{content:"";position:absolute;right:-20%;bottom:-40%;width:60%;height:120%;
+      background: radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.16), transparent 60%);
+      transform: rotate(12deg);
+    }
+    body.modern .value:hover{transform: translateY(-4px);box-shadow: 0 16px 40px rgba(0,0,0,.28)}
+    body.modern .value-row .value:nth-child(odd){border-color: rgba(59,130,246,.35)}
+    body.modern .value-row .value:nth-child(even){border-color: rgba(236,72,153,.35)}
     body.modern .value b{display:block;color:var(--text);margin-bottom:6px;letter-spacing:.10em;text-transform:uppercase;font-size:12px}
     body.modern .letter-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
-    body.modern .letter-panel{border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);padding:16px 16px}
+    body.modern .letter-panel{position:relative;overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);padding:16px 16px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.06);
+    }
     html[data-theme="light"] body.modern .letter-panel{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
+    body.modern .letter-panel::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;
+      background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);
+      opacity:.95;
+    }
     body.modern .letter-panel h2{margin:0 0 8px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
     body.modern .letter-list{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}
     body.modern .letter-foot{padding:14px 22px 22px;border-top:1px solid rgba(255,255,255,.10);display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
     body.modern .sig{display:flex;flex-direction:column;gap:2px}
     body.modern .sig b{color:var(--text);font-weight:950}
     body.modern .sig span{color:var(--muted);font-weight:800}
+
+    /* Reveal on scroll */
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s ease, transform .5s ease;will-change:opacity, transform}
+    .reveal.show{opacity:1;transform:none}
+    .value.reveal{transition-delay:.05s}
+    .value.reveal:nth-child(2){transition-delay:.12s}
+    .letter-panel.reveal{transition-delay:.08s}
+    .letter-grid .letter-panel.reveal:nth-child(2){transition-delay:.16s}
     body.modern .cta{display:flex;gap:10px;flex-wrap:wrap}
     @media (max-width: 900px){
       body.modern .letter-grid{grid-template-columns:1fr}
@@ -215,7 +278,7 @@
           <div class="letter-brand" aria-label="Olmeca Code">
             <img src="img/uploads/2021/09/agroequipos-pelaez-logo-transparente-2.png" alt="Olmeca Code" />
             <div>
-              <strong>Olmeca Code</strong>
+              <strong>Tecno Innova</strong>
               <small>Implementación de sistemas</small>
             </div>
           </div>
@@ -233,33 +296,55 @@
             con trazabilidad y documentos listos para imprimir/PDF.
           </p>
 
-          <div class="hero-collage" aria-label="Vista general">
-            <div class="shot" aria-label="Operación">
-              <img src="img/uploads/2021/09/corrales-para-ganado-f1-grande.jpg" alt="Operación Agroequipos Pelaez" loading="lazy" />
-              <div class="cap">
-                <b>Control total</b>
-                <span>De la venta a la entrega, sin perder información.</span>
+          <div class="hero-collage" aria-label="Vista general del sistema">
+            <!-- Panel grande reservado (video futuro) -->
+            <div class="demo-surface" aria-label="Vista general">
+              <div class="cap" style="position:static;gap:6px;text-align:center;padding:18px 12px">
+                <b>Vista general</b>
+                <span>Espacio reservado para video demostrativo del sistema.</span>
               </div>
             </div>
-            <div class="shot-stack" aria-label="Capacidades">
-              <div class="shot" aria-label="Inventario">
-                <img src="img/uploads/2021/09/basculas-ganaderas-pelaez-fondo.jpg" alt="Inventario" loading="lazy" />
-                <div class="cap">
-                  <b>Inventario</b>
-                  <span>Stock y precios siempre al día.</span>
+
+            <!-- Pila de documentos animados -->
+            <div class="shot-stack demo-stack" aria-label="Documentos del sistema">
+              <div class="demo-surface" aria-label="Terminal del sistema">
+                <div class="terminal" id="demo-terminal">
+                  <div class="term-head">
+                    <span class="term-dot red"></span>
+                    <span class="term-dot yellow"></span>
+                    <span class="term-dot green"></span>
+                  </div>
+                  <div class="term-body" id="term-body" aria-live="polite"></div>
                 </div>
               </div>
-              <div class="shot" aria-label="Envíos">
-                <img src="img/uploads/2021/09/Banos-garrapaticidas-f1-grande.jpg" alt="Envíos" loading="lazy" />
-                <div class="cap">
-                  <b>Envíos</b>
-                  <span>Dirección + mapa + costo por distancia.</span>
-                </div>
+              <div class="demo-surface doc-scene" id="doc-scene">
+                <div class="doc-card"><b>Orden de venta</b><div class="doc-meta"><span class="doc-pill">OV-1024</span><span class="doc-pill">Cliente: EP-001</span><span class="doc-pill">$ 245,000</span></div></div>
+                <div class="doc-card"><b>Garantía</b><div class="doc-meta"><span class="doc-pill">REM-7001</span><span class="doc-pill">Serie: A12-9X</span><span class="doc-pill">PDF</span></div></div>
+                <div class="doc-card"><b>Envío</b><div class="doc-meta"><span class="doc-pill">Ruta: MX-NL</span><span class="doc-pill">Mapa</span><span class="doc-pill">ETA 48h</span></div></div>
               </div>
             </div>
           </div>
 
           <div class="cap-grid" aria-label="Capacidades del sistema">
+            <div class="cap-card">
+              <div class="cap-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 4h7v6H3z" />
+                  <path d="M14 4h7v6h-7z" />
+                  <path d="M3 14h7v6H3z" />
+                  <path d="M14 14h7v6h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h3>ERP + CRM</h3>
+                <p>Gestión integral de clientes, ventas y operación en un solo lugar.</p>
+                <div class="mini">
+                  <span class="pill">Clientes</span>
+                  <span class="pill">Seguimiento</span>
+                  <span class="pill">Cotizaciones</span>
+                </div>
+              </div>
+            </div>
             <div class="cap-card">
               <div class="cap-ico" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -335,21 +420,75 @@
                 </div>
               </div>
             </div>
+
+            <div class="cap-card">
+              <div class="cap-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 13h18" />
+                  <path d="M5 17h14l-2 4H7l-2-4Z" />
+                  <path d="M6 13V9a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Remolques</h3>
+                <p>Diseño y fabricación de remolques a medida.</p>
+                <div class="mini">
+                  <span class="pill">Cama baja</span>
+                  <span class="pill">Reforzados</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="cap-card">
+              <div class="cap-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 17h20" />
+                  <path d="M4 17l2-6h12l2 6" />
+                  <path d="M8 11V7h8v4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Remolques ganaderos</h3>
+                <p>Tipo jaula y cuello de ganso, seguridad y confort animal.</p>
+                <div class="mini">
+                  <span class="pill">Tipo jaula</span>
+                  <span class="pill">Cuello de ganso</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="cap-card">
+              <div class="cap-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 20V6l6-3 6 3v14" />
+                  <path d="M9 14h6" />
+                  <path d="M9 10h6" />
+                </svg>
+              </div>
+              <div>
+                <h3>Fierros para marcar</h3>
+                <p>Marcas personalizadas, acero grado alimenticio.</p>
+                <div class="mini">
+                  <span class="pill">Letras/números</span>
+                  <span class="pill">Diseño a medida</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="value-row" aria-label="Beneficios">
-            <div class="value">
+            <div class="value reveal">
               <b>Menos errores</b>
               Stock validado al vender. Cambios con historial y consistencia.
             </div>
-            <div class="value">
+            <div class="value reveal">
               <b>Más velocidad</b>
               Menos clicks, búsqueda rápida y edición inmediata de órdenes.
             </div>
           </div>
 
           <div class="letter-grid" aria-label="Siguiente evolución">
-            <div class="letter-panel">
+            <div class="letter-panel reveal">
               <h2>Lo que sigue</h2>
               <ul class="letter-list">
                 <li>ID automático de clientes (C-001) y datos completos.</li>
@@ -359,7 +498,7 @@
               </ul>
             </div>
 
-            <div class="letter-panel">
+            <div class="letter-panel reveal">
               <h2>Entrega</h2>
               <ul class="letter-list">
                 <li>Implementación por etapas (funcional desde el primer entregable).</li>
@@ -369,14 +508,14 @@
             </div>
           </div>
 
-          <p class="sub">
+          <p class="sub remate">
             Nuestro compromiso: una solución que se sienta <strong>de Agroequipos Pelaez</strong>. Clara, rápida y lista para operar.
           </p>
         </div>
 
         <div class="letter-foot">
           <div class="sig" aria-label="Firma">
-            <b>Olmeca Code</b>
+            <b>Tecno Innova</b>
             <span>Equipo de implementación</span>
           </div>
           <div class="cta" aria-label="Acciones">
@@ -457,6 +596,75 @@
         closeModal();
       }
     });
+
+    // Demo de terminal y documentos
+    (function(){
+      var box = document.getElementById('term-body');
+      var docs = document.querySelectorAll('#doc-scene .doc-card');
+      if (!box) return;
+      function appendLine(t){
+        var p = document.createElement('div');
+        p.className = 'line';
+        p.textContent = t;
+        box.appendChild(p);
+        box.scrollTop = box.scrollHeight;
+      }
+      function typeLine(t, cb){
+        var row = document.createElement('div');
+        row.className = 'line';
+        var span = document.createElement('span');
+        var caret = document.createElement('span');
+        caret.className = 'caret';
+        row.appendChild(span); row.appendChild(caret);
+        box.appendChild(row);
+        var i=0; var id = setInterval(function(){
+          span.textContent = t.slice(0, ++i);
+          box.scrollTop = box.scrollHeight;
+          if (i>=t.length){ clearInterval(id); caret.remove(); if(cb) setTimeout(cb, 220); }
+        }, 18);
+      }
+      var script = [
+        'login tecnoinnova@erp',
+        'orden nueva --cliente EP-001',
+        'item agregar SKU-4002 --cantidad 1 --precio 245000',
+        'calcular totales',
+        'generar pdf garantia --serie A12-9X',
+        'enviar orden --ruta MX-NL --eta 48h'
+      ];
+      var i=0;
+      function step(){
+        if (i<script.length){ typeLine('$ '+script[i++], step); }
+        else {
+          setTimeout(function(){ docs[0] && docs[0].classList.add('show'); }, 120);
+          setTimeout(function(){ docs[1] && docs[1].classList.add('show'); }, 420);
+          setTimeout(function(){ docs[2] && docs[2].classList.add('show'); }, 720);
+          setTimeout(function(){ appendLine('✔ Proceso completado. Documentos listos.'); }, 900);
+        }
+      }
+      setTimeout(step, 400);
+    })();
+
+    // Reveal on scroll with IntersectionObserver
+    (function(){
+      var items = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+      if (!('IntersectionObserver' in window) || items.length === 0) {
+        items.forEach(function(n){ n.classList.add('show'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting) {
+            requestAnimationFrame(function(){ entry.target.classList.add('show'); });
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+      items.forEach(function(n, i){
+        // Small stagger via inline style delay if desired
+        // n.style.transitionDelay = (i * 60) + 'ms';
+        io.observe(n);
+      });
+    })();
   </script>
 </body>
 </html>
