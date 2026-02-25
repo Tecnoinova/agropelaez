@@ -32,7 +32,7 @@
       background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);border-radius:999px;opacity:.95}
     body.modern .hero-collage{margin-top:16px;display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
     /* System demo (terminal + docs) */
-    .demo-surface{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);overflow:hidden;min-height:260px;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+    .demo-surface{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);overflow:hidden;min-height:clamp(200px, 32vh, 340px);box-shadow:0 10px 26px rgba(0,0,0,.18)}
     html[data-theme="light"] .demo-surface{border-color:rgba(17,24,39,.10);background:rgba(17,24,39,.02)}
     .terminal{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;color:#e5e7eb;background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.78));height:100%;display:flex;flex-direction:column;font-size:13px}
     html[data-theme="light"] .terminal{color:#111827;background:linear-gradient(180deg, rgba(243,244,246,.9), rgba(229,231,235,.85))}
@@ -40,7 +40,7 @@
     html[data-theme="light"] .term-head{border-color:rgba(17,24,39,.10)}
     .term-dot{width:10px;height:10px;border-radius:999px}
     .term-dot.red{background:#ef4444}.term-dot.yellow{background:#f59e0b}.term-dot.green{background:#10b981}
-    .term-body{padding:14px 16px;flex:1;overflow:hidden}
+    .term-body{padding:10px 12px;flex:1;overflow:hidden}
     .line{opacity:.95}
     .line .prompt{color:#22d3ee;font-weight:700}
     .line .cmd{color:#a78bfa;font-weight:800}
@@ -51,7 +51,7 @@
     @keyframes blink{50%{opacity:0}}
     .shot-stack.demo-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
     /* Cinematic flow */
-    .flow-surface{position:relative;padding:18px;min-height:260px}
+    .flow-surface{position:relative;padding:16px;min-height:clamp(220px, 36vh, 360px)}
     .flow-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
     .flow-node{position:absolute;min-width:140px;max-width:200px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);opacity:0;transform:scale(.92);transition:opacity .45s ease, transform .45s ease}
@@ -71,7 +71,7 @@
     .flow-switch button{appearance:none;border:0;background:transparent;color:var(--text);font-weight:900;cursor:pointer}
     .flow-switch .pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
     html[data-theme="light"] .flow-switch .pill{border-color:rgba(17,24,39,.12);background:rgba(17,24,39,.06)}
-    .doc-scene{position:relative;min-height:clamp(300px, 26vh, 380px);padding-bottom:8px}
+    .doc-scene{position:relative;min-height:clamp(220px, 32vh, 340px);padding-bottom:6px}
     .doc-card{position:absolute;right:10px;left:10px;top:10px;border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));box-shadow:var(--shadow);transform:translateY(12px) scale(.98);opacity:0}
     html[data-theme="light"] .doc-card{border-color:rgba(17,24,39,.10);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
     .doc-card b{display:block;color:var(--text);font-size:12px;letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
@@ -154,6 +154,48 @@
       body.modern .value-row{grid-template-columns:1fr}
       body.modern .letter-meta{align-items:flex-start}
       body.modern .letter-head{flex-direction:column;align-items:flex-start}
+    }
+    /* Ajuste para pantallas con poca altura: comprimir demo para que quepa sin scroll a 100% */
+    @media (max-height: 820px){
+      body.modern .letter-head{padding:18px 18px}
+      body.modern .letter-body{padding:18px 18px 8px}
+      body.modern .hero-collage{margin-top:12px;gap:10px;grid-template-columns:1.2fr .8fr}
+      .terminal{font-size:12px}
+      .term-head{padding:8px 10px}
+      .term-body{padding:8px 10px}
+      .demo-surface{min-height:clamp(170px, 28vh, 300px)}
+      .flow-surface{padding:12px;min-height:clamp(190px, 32vh, 320px)}
+      .doc-scene{min-height:clamp(190px, 30vh, 300px);padding-bottom:4px}
+      .doc-card{padding:8px}
+      .doc-card:nth-child(1){top:3.5%}
+      .doc-card:nth-child(2){top:31%}
+      .doc-card:nth-child(3){top:58.5%}
+    }
+    @media (max-height: 760px){
+      body.modern .letter-head{padding:14px 16px}
+      body.modern .letter-body h1{margin:0 0 6px;font-size:clamp(20px,2.3vw,28px)}
+      body.modern .letter-body p.sub{margin:6px 0}
+      body.modern .hero-collage{margin-top:10px;gap:8px;grid-template-columns:1.18fr .82fr}
+      .terminal{font-size:11.5px}
+      .demo-surface{min-height:clamp(160px, 26vh, 280px)}
+      .flow-surface{padding:10px;min-height:clamp(180px, 30vh, 300px)}
+      .doc-scene{min-height:clamp(180px, 28vh, 280px)}
+      .doc-card{padding:7px}
+      .shot-stack.demo-stack{gap:10px}
+    }
+    @media (max-height: 680px){
+      body.modern .letter-head{padding:12px 14px}
+      body.modern .letter-body{padding:12px 14px 6px}
+      body.modern .hero-collage{margin-top:8px;gap:6px;grid-template-columns:1.16fr .84fr}
+      .terminal{font-size:11px}
+      .term-head{padding:6px 8px}
+      .term-body{padding:6px 8px}
+      .demo-surface{min-height:clamp(150px, 24vh, 260px)}
+      .flow-surface{padding:8px;min-height:clamp(170px, 28vh, 280px)}
+      .doc-scene{min-height:clamp(170px, 26vh, 260px)}
+      .doc-card:nth-child(1){top:3%}
+      .doc-card:nth-child(2){top:30%}
+      .doc-card:nth-child(3){top:57%}
     }
     
     /* Modal Styles */
@@ -318,8 +360,7 @@
         <div class="letter-body">
           <h1>Una operación más rápida, clara y controlada</h1>
           <p class="sub">
-            Implementamos para <strong>Agroequipos Pelaez</strong> un sistema que conecta <strong>Ventas</strong>, <strong>Inventario</strong> y <strong>Envíos</strong>
-            con trazabilidad y documentos listos para imprimir/PDF.
+            Implementamos para <strong>Agroequipos Pelaez</strong> un sistema que conecta <strong>Ventas</strong>, <strong>Inventario</strong> y <strong>Envíos</strong> con trazabilidad y documentos listos para imprimir/PDF.
           </p>
 
           <div class="hero-collage" aria-label="Vista general del sistema">
@@ -923,25 +964,67 @@
           if (i>=t.length){ clearInterval(id); caret.remove(); span.innerHTML = colorize(span.textContent); if(cb) setTimeout(cb, 220); }
         }, 18);
       }
-      var script = [
-        'login agroequipospelaez@erop',
-        'orden nueva --cliente EP-001',
-        'item agregar SKU-4002 --cantidad 1 --precio 245000',
-        'calcular totales',
-        'generar pdf garantia --serie A12-9X',
-        'enviar orden --ruta MX-NL --eta 48h'
-      ];
+      function pad3(n){ return String(n).padStart(3,'0'); }
+      function pick(arr, idx){ return arr[idx % arr.length]; }
+      function buildScript(seq){
+        var cliente = 'EP-' + pad3(seq);
+        var precio = 245000 + (seq-1)*1000;
+        var serie = 'A12-' + (9+((seq-1)%9)) + 'X';
+        var rutas = ['MX-NL','MX-TAB','MX-JAL','MX-QRO'];
+        var etas = ['24h','48h','72h'];
+        var ruta = pick(rutas, seq-1);
+        var eta = pick(etas, seq-1);
+        return [
+          'login agroequipospelaez@erop',
+          'orden nueva --cliente ' + cliente,
+          'item agregar SKU-4002 --cantidad 1 --precio ' + precio,
+          'calcular totales',
+          'generar pdf garantia --serie ' + serie,
+          'enviar orden --ruta ' + ruta + ' --eta ' + eta
+        ];
+      }
+      function updateDocs(seq){
+        var cliente = 'EP-' + pad3(seq);
+        var ov = 'OV-' + (1024 + (seq-1));
+        var precio = 245000 + (seq-1)*1000;
+        var rem = 'REM-' + (7001 + (seq-1));
+        var serie = 'A12-' + (9+((seq-1)%9)) + 'X';
+        var rutas = ['MX-NL','MX-TAB','MX-JAL','MX-QRO'];
+        var etas = ['24h','48h','72h'];
+        var ruta = pick(rutas, seq-1);
+        var eta = pick(etas, seq-1);
+        if (docs[0]) docs[0].innerHTML = '<b>Orden de venta</b><div class="doc-meta"><span class="doc-pill">'+ov+'</span><span class="doc-pill">Cliente: '+cliente+'</span><span class="doc-pill">$ '+precio.toLocaleString('es-MX')+'</span></div>';
+        if (docs[1]) docs[1].innerHTML = '<b>Garantía</b><div class="doc-meta"><span class="doc-pill">'+rem+'</span><span class="doc-pill">Serie: '+serie+'</span><span class="doc-pill">PDF</span></div>';
+        if (docs[2]) docs[2].innerHTML = '<b>Envío</b><div class="doc-meta"><span class="doc-pill">Ruta: '+ruta+'</span><span class="doc-pill">Mapa</span><span class="doc-pill">ETA '+eta+'</span></div>';
+      }
+      var script = [];
       var i=0;
+      function hideDocs(){
+        for (var k=0; k<docs.length; k++){
+          // Mantener visibles entre iteraciones según solicitud; no remover 'show'
+        }
+      }
+      var orderSeq = 1;
+      function startRun(){
+        box.innerHTML = '';
+        i = 0;
+        script = buildScript(orderSeq);
+        setTimeout(step, 250);
+      }
       function step(){
         if (i<script.length){ typeLine('$ '+script[i++], step); }
         else {
+          // Al completar, ahora sí actualizar los documentos a la orden actual
+          updateDocs(orderSeq);
           setTimeout(function(){ docs[0] && docs[0].classList.add('show'); }, 120);
           setTimeout(function(){ docs[1] && docs[1].classList.add('show'); }, 420);
           setTimeout(function(){ docs[2] && docs[2].classList.add('show'); }, 720);
           setTimeout(function(){ appendLine('✔ Proceso completado. Documentos listos.'); }, 900);
+          // Reiniciar ciclo ~2s después de completar (900ms + 2000ms ≈ 2900ms)
+          setTimeout(function(){ orderSeq++; startRun(); }, 2900);
         }
       }
-      setTimeout(step, 400);
+      setTimeout(startRun, 400);
     })();
 
     // Distribuir dinámicamente los documentos para que siempre quepan en el contenedor
